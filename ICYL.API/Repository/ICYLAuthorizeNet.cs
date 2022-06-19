@@ -240,39 +240,25 @@ namespace ICYL.API.Repository
 
 			return obj;
 		}
-		public dynamic DonateByApplePay(string token)
+		public dynamic DonateByApplePay(ApplePayTokenModel token)
 		{
-			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
+			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(@token.Token);
 			var tokenData = Convert.ToBase64String(plainTextBytes);
+			var base64EncodedBytes = System.Convert.FromBase64String(tokenData);
+			var decrypt= System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
 			InvokePaymentAccount(0);
-			//Console.WriteLine("Create Apple Pay Transaction Sample");
-
-			//ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
-
-			//// define the merchant information (authentication / transaction id)
-			//ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
-			//{
-			//	name = ApiLoginID,
-			//	ItemElementName = ItemChoiceType.transactionKey,
-			//	Item = ApiTransactionKey,
-			//};
-
 			//set up data based on transaction
 			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = tokenData };
-
 			//standard api call to retrieve response
 			var paymentType = new paymentType { Item = opaqueData };
-
 			var transactionRequest = new transactionRequestType
 			{
 				transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // authorize and capture transaction
-				amount = (decimal)50.10,// Amount,
+				amount = (decimal)token.Amount,// Amount,
 				payment = paymentType,
 
 			};
-
 			var request = new createTransactionRequest { transactionRequest = transactionRequest, };
-
 			// instantiate the controller that will call the service
 			var controller = new createTransactionController(request);
 			try

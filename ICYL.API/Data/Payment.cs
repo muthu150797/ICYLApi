@@ -59,7 +59,7 @@ namespace ICYL.API.Data
 			return response;
 
 		}
-		public dynamic DonateByApplePay(string token)
+		public dynamic DonateByApplePay(ApplePayTokenModel token)
 		{
 			var response = ICYLAuthorize.DonateByApplePay(token);// payment.Donate(model);
 			return response;

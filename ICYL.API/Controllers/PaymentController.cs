@@ -48,9 +48,9 @@ namespace ICYL.API.Controllers
 		}
 		[HttpPost]
 		[Route("DonateByApplePay")]
-		public dynamic DonateByApplePay([FromBody] TokenModel token)
+		public dynamic DonateByApplePay([FromBody] ApplePayTokenModel token)
 		{
-			var response = payment.DonateByApplePay(token.token);
+			var response = payment.DonateByApplePay(token);
 			return response;
 		}
 		[HttpPost]
@@ -186,8 +186,5 @@ namespace ICYL.API.Controllers
 		//}
 	}
 
-	public class TokenModel
-	{
-		public string? token { get; set; }
-	}
+	
 }
