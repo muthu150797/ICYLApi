@@ -8,6 +8,7 @@
 		public string? AccountNumber { get; set; }
 		public string? AccountType { get; set; }
 		public decimal SettleAmount { get; set; }
+		public string? Category { get; set; }
 		public string? TransactionStatus { get; set; }
 
 	}

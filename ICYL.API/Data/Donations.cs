@@ -15,7 +15,7 @@ namespace ICYL.API.Data
 			var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
 			//var cons = config.GetSection("DbConnection").Value;
 			_connectionstring = config.GetSection("DbConnection").Value;// "Server=tcp:icyldonation.database.windows.net,1433;Initial Catalog=ICYLMobiledonation;Persist Security Info=False;User ID=icyl;Password=!cyldb100$; MultipleActiveResultSets =False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";//config.GetConnectionString("DbConnection");
-			//con = new SqlConnection(cons);
+																		//con = new SqlConnection(cons);
 		}
 		public DonationModelList GetDonations(dynamic config)
 		{
@@ -105,8 +105,9 @@ namespace ICYL.API.Data
 			}
 			return donationAmount;
 		}
+
 		public DonationHistory GetDonationHistory(Login detail)
-        {
+		{
 			List<HistoryList> historyList = new List<HistoryList>();
 			DonationHistory donationList = new DonationHistory();
 			try
@@ -125,10 +126,10 @@ namespace ICYL.API.Data
 						{
 							HistoryList donation = new HistoryList();
 							donation.EmailId = row["EmailId"].ToString();
-							donation.CreatedOn =row["CreatedOn"].ToString();
+							donation.CreatedOn = row["CreatedOn"].ToString();
 							donation.AmtDonation = row["AmtDonation"].ToString();
 							donation.DonationCategory = row["value"].ToString();
-							donation.Description=row["Description"].ToString();
+							donation.Description = row["Description"].ToString();
 							historyList.Add(donation);
 						}
 						donationList.Status = true;
@@ -147,11 +148,42 @@ namespace ICYL.API.Data
 			catch (Exception ex)
 			{
 				donationList.Status = false;
-				donationList.Message=ex.Message;
+				donationList.Message = ex.Message;
 			}
 			return donationList;
 
-        }
+		}
+		public string GetDonationCategory(int categoryId)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionstring))
+				{
+					SqlDataAdapter donationAdapter = new SqlDataAdapter("select ValueId,Value from LookupValue where ValueId=" + categoryId, connection);
+					donationAdapter.SelectCommand.CommandType = CommandType.Text;
+					//Using Data Table
+					DataTable donationTable = new DataTable();
+					donationAdapter.Fill(donationTable);
+					if (donationTable.Rows.Count > 0)
+					{
+						foreach (DataRow row in donationTable.Rows)
+						{
+							return row["Value"].ToString();
+						}
+					}
+					else
+					{
+						return "";
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return "";
+
+			}
+			return "";
+		}
 		public QuotesReponseModel GetDonationCount(Login detail)
 		{
 			QuotesReponseModel response = new QuotesReponseModel();
@@ -160,7 +192,7 @@ namespace ICYL.API.Data
 				using (SqlConnection connection = new SqlConnection(_connectionstring))
 				{
 					connection.Open();
-					SqlCommand cmd = new SqlCommand("select count(*) from PaymentConfig where EmailId='"+detail.UserName+"'",connection);
+					SqlCommand cmd = new SqlCommand("select count(*) from PaymentConfig where EmailId='" + detail.UserName + "'", connection);
 					cmd.CommandType = CommandType.Text;
 					//cmd.Parameters.Add(new SqlParameter("@Email",detail.UserName));
 					var result = cmd.ExecuteScalar();
@@ -185,49 +217,49 @@ namespace ICYL.API.Data
 			return response;
 		}
 		public QuotesModel GetQuotes()
-	{
-		QuotesModel model = new QuotesModel();
-		List<QuotesList> quotesModel = new List<QuotesList>();
-		try
 		{
-			using (SqlConnection connection = new SqlConnection(_connectionstring))
+			QuotesModel model = new QuotesModel();
+			List<QuotesList> quotesModel = new List<QuotesList>();
+			try
 			{
-				SqlDataAdapter donationAdapter = new SqlDataAdapter("select * from Quotes", connection);
-				donationAdapter.SelectCommand.CommandType = CommandType.Text;
-				//Using Data Table
-				DataTable userDataTable = new DataTable();
-				donationAdapter.Fill(userDataTable);
-				if (userDataTable.Rows.Count > 0)
+				using (SqlConnection connection = new SqlConnection(_connectionstring))
 				{
-					foreach (DataRow row in userDataTable.Rows)
+					SqlDataAdapter donationAdapter = new SqlDataAdapter("select * from Quotes", connection);
+					donationAdapter.SelectCommand.CommandType = CommandType.Text;
+					//Using Data Table
+					DataTable userDataTable = new DataTable();
+					donationAdapter.Fill(userDataTable);
+					if (userDataTable.Rows.Count > 0)
 					{
-						QuotesList quotes = new QuotesList();
-						quotes.QuotesId = Convert.ToInt32(row["QuotesId"]);
-						quotes.QuotesTitle = row["QuotesTitle"].ToString();
-						quotesModel.Add(quotes);
+						foreach (DataRow row in userDataTable.Rows)
+						{
+							QuotesList quotes = new QuotesList();
+							quotes.QuotesId = Convert.ToInt32(row["QuotesId"]);
+							quotes.QuotesTitle = row["QuotesTitle"].ToString();
+							quotesModel.Add(quotes);
+						}
+						model.Status = true;
+						model.QuotesLists = quotesModel;
+						model.Message = "Success";
 					}
-					model.Status = true;
-					model.QuotesLists = quotesModel;
-					model.Message = "Success";
-				}
-				else
-				{
-					model.Status = false;
-					model.QuotesLists = quotesModel;
-					model.Message = "Failed";
-				}
+					else
+					{
+						model.Status = false;
+						model.QuotesLists = quotesModel;
+						model.Message = "Failed";
+					}
 
+				}
 			}
-		}
-		catch (Exception ex)
-		{
-			model.Status = false;
-			model.QuotesLists = quotesModel;
+			catch (Exception ex)
+			{
+				model.Status = false;
+				model.QuotesLists = quotesModel;
 
-			model.Message = ex.ToString();
+				model.Message = ex.ToString();
+			}
+			return model;
 		}
-		return model;
+
 	}
-
-}
 }

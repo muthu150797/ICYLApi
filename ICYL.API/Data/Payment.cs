@@ -55,9 +55,26 @@ namespace ICYL.API.Data
 		}
 		public dynamic GetAllTransaction(TransDailyReport report)
 		{
-			var response= ICYLAuthorize.GetAllTransaction(report);
+			var response = ICYLAuthorize.GetAllTransaction(report);
 			return response;
 
+		}
+		public dynamic DonateByApplePay(string token)
+		{
+			var response = ICYLAuthorize.DonateByApplePay(token);// payment.Donate(model);
+			return response;
+
+		}
+		public dynamic GetAllSubscription()
+		{
+			var response = ICYLAuthorize.GetAllSubscription();
+			return response;
+
+		}
+		public dynamic CancelSubscription(string subscriptionId)
+		{
+			var response = ICYLAuthorize.CancelSubscription(subscriptionId);
+			return response;
 		}
 		public TransactionResponse InsertPaymentDetail(PaymentModel paymentDetail)
 		{
@@ -99,7 +116,7 @@ namespace ICYL.API.Data
 					else
 					{
 						response.Status = false;
-						response.Message = "Payment details failed to add, try again!";
+						response.Message = "Payment details added failed, try again!";
 					}
 				}
 			}
@@ -163,9 +180,11 @@ namespace ICYL.API.Data
 				{
 					email = model.EmailId
 				};
+				Donations donation = new Donations();
+
 				orderType OrderInfo = new orderType
 				{
-					description = "jg"// new EmailRepository().FindCategory(model.lkpDonationCategory.ToString())
+					description = donation.GetDonationCategory(model.lkpDonationCategory)// new EmailRepository().FindCategory(model.lkpDonationCategory.ToString())
 				};
 				//};
 				BillTo = new nameAndAddressType
@@ -215,12 +234,12 @@ namespace ICYL.API.Data
 
 					if (model.PaymentEndType == (int)(GlobalContext.PaymentEndType.EndDate))
 					{
-						
+
 
 						if (model.RecurringType == Convert.ToInt32(GlobalContext.RecurringType.Week))
 						{
-							
-							occurrences = ICYLHelpers.CalculateWeeks(Convert.ToDateTime( dateVal), Convert.ToDateTime(EndDateVal));
+
+							occurrences = ICYLHelpers.CalculateWeeks(Convert.ToDateTime(dateVal), Convert.ToDateTime(EndDateVal));
 						}
 						else
 						{

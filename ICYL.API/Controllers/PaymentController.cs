@@ -47,11 +47,33 @@ namespace ICYL.API.Controllers
 			return response;
 		}
 		[HttpPost]
+		[Route("DonateByApplePay")]
+		public dynamic DonateByApplePay([FromBody] TokenModel token)
+		{
+			var response = payment.DonateByApplePay(token.token);
+			return response;
+		}
+		[HttpPost]
 		[Route("GetAllTransaction")]
 		public dynamic GetAllTransaction(TransDailyReport report)
 		{
 
 			var response = payment.GetAllTransaction(report);
+			return response;
+		}
+		[HttpPost]
+		[Route("GetAllSubscription")]
+		public dynamic GetAllSubscription()
+		{
+			var response = payment.GetAllSubscription();
+			return response;
+
+		}
+		[HttpPost]
+		[Route("CancelSubscription")]
+		public dynamic CancelSubscription(SubscriptionModel subscription)
+		{
+			var response = payment.CancelSubscription(subscription.SubscriptionId.ToString());
 			return response;
 		}
 		//[HttpPost]
@@ -162,5 +184,10 @@ namespace ICYL.API.Controllers
 
 		//    return response2;
 		//}
+	}
+
+	public class TokenModel
+	{
+		public string? token { get; set; }
 	}
 }

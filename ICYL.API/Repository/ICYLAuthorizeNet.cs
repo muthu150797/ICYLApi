@@ -240,7 +240,108 @@ namespace ICYL.API.Repository
 
 			return obj;
 		}
+		public dynamic DonateByApplePay(string token)
+		{
+			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(token);
+			var tokenData = Convert.ToBase64String(plainTextBytes);
+			InvokePaymentAccount(0);
+			//Console.WriteLine("Create Apple Pay Transaction Sample");
 
+			//ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+
+			//// define the merchant information (authentication / transaction id)
+			//ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+			//{
+			//	name = ApiLoginID,
+			//	ItemElementName = ItemChoiceType.transactionKey,
+			//	Item = ApiTransactionKey,
+			//};
+
+			//set up data based on transaction
+			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = tokenData };
+
+			//standard api call to retrieve response
+			var paymentType = new paymentType { Item = opaqueData };
+
+			var transactionRequest = new transactionRequestType
+			{
+				transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // authorize and capture transaction
+				amount = (decimal)50.10,// Amount,
+				payment = paymentType,
+
+			};
+
+			var request = new createTransactionRequest { transactionRequest = transactionRequest, };
+
+			// instantiate the controller that will call the service
+			var controller = new createTransactionController(request);
+			try
+			{
+				controller.Execute();
+			}
+			catch (Exception ex)
+			{
+				return ex;
+			}
+			ApplePayResponse res = new ApplePayResponse();
+			// get the response from the service (errors contained if any)
+			var response = controller.GetApiResponse();
+			// validate response
+			if (response != null)
+			{
+				if (response.messages.resultCode == messageTypeEnum.Ok)
+				{
+					if (response.transactionResponse.messages != null)
+					{
+
+						res.Status = true;
+						res.Message = response.transactionResponse.messages[0].description;
+						res.TransactionId = response.transactionResponse.transId;
+						//Console.WriteLine("Successfully created an Apple pay transaction with Transaction ID: " + response.transactionResponse.transId);
+						//Console.WriteLine("Response Code: " + response.transactionResponse.responseCode);
+						//Console.WriteLine("Message Code: " + response.transactionResponse.messages[0].code);
+						//Console.WriteLine("Description: " + response.transactionResponse.messages[0].description);
+					}
+					else
+					{
+						//Console.WriteLine("Failed Transaction.");
+						if (response.transactionResponse.errors != null)
+						{
+							res.Status = false;
+							res.Message = response.transactionResponse.errors[0].errorText;
+							//Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
+							//Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText);
+						}
+					}
+				}
+				else
+				{
+
+					//Console.WriteLine("Failed Transaction.");
+					if (response.transactionResponse != null && response.transactionResponse.errors != null)
+					{
+						res.Status = false;
+						res.Message = response.transactionResponse.errors[0].errorText;
+						//Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
+						//Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText);
+					}
+					else
+					{
+						res.Status = false;
+						res.Message = response.messages.message[0].text;
+						//Console.WriteLine("Error Code: " + response.messages.message[0].code);
+						//Console.WriteLine("Error message: " + response.messages.message[0].text);
+					}
+
+				}
+			}
+			else
+			{
+				res.Status = false;
+				res.Message = "Null response";
+			}
+			return res;
+		}
 		public dynamic ICYLPaypal(decimal Amount, creditCardType creditCardInfo, customerAddressType CustomerInfo, orderType OrderInfo, nameAndAddressType MailTo, customerDataType CustData, int lkpCategory)
 		{
 			PaymentTransaction obj = new PaymentTransaction();
@@ -376,15 +477,16 @@ namespace ICYL.API.Repository
 						report.SubmitTimeLocal = transaction.submitTimeLocal.ToString();
 						report.SettleAmount = transaction.settleAmount;
 						report.AccountType = transaction.accountType;
+						report.Category = GetCustomerProfile(transaction.transId);
 						report.AccountNumber = transaction.accountNumber;
 						reportResponse.Add(report);
 					}
 				}
 			}
 			var unSettledPaymentRes = GetUnSettledTransaction();
-			if(unSettledPaymentRes != null)
+			if (unSettledPaymentRes != null)
 			{
-				foreach (var transaction in  unSettledPaymentRes)
+				foreach (var transaction in unSettledPaymentRes)
 				{
 					TransactionReport report = new TransactionReport();
 					report.TransId = transaction.transId;
@@ -393,6 +495,7 @@ namespace ICYL.API.Repository
 					report.SubmitTimeLocal = transaction.submitTimeUTC.ToString();
 					report.SettleAmount = transaction.settleAmount;
 					report.AccountType = transaction.accountType;
+					report.Category = GetCustomerProfile(transaction.transId);
 					report.AccountNumber = transaction.accountNumber;
 					reportResponse.Add(report);
 				}
@@ -428,6 +531,71 @@ namespace ICYL.API.Repository
 					return null;
 			}
 			return null;
+		}
+		public dynamic GetAllSubscription()
+		{
+			List<SubscriptionModel> subsList = new List<SubscriptionModel>();
+			InvokePaymentAccount(0);
+			var request = new ARBGetSubscriptionListRequest { searchType = ARBGetSubscriptionListSearchTypeEnum.subscriptionActive };    // only gets active subscriptions
+
+			var controller = new ARBGetSubscriptionListController(request);          // instantiate the controller that will call the service
+			controller.Execute();
+
+			ARBGetSubscriptionListResponse response = controller.GetApiResponse();   // get the response from the service (errors contained if any)
+
+			// validate response
+			if (response != null && response.messages.resultCode == messageTypeEnum.Ok)
+			{
+				if (response != null && response.messages.message != null && response.subscriptionDetails != null)
+				{
+					foreach (var transaction in response.subscriptionDetails)
+					{
+						SubscriptionModel report = new SubscriptionModel();
+						report.SubscriptionId = transaction.id;
+						report.Name = transaction.firstName;
+						report.Amount = transaction.amount;
+						report.SubscriptionStatus = transaction.status.ToString();
+						report.CreatedOn = transaction.createTimeStampUTC.ToString();
+						report.PaymentMethod = transaction.paymentMethod.ToString();
+						report.AccountNumber = transaction.accountNumber;
+						subsList.Add(report);
+					}
+					return subsList;
+				}
+			}
+			else if (response != null)
+			{
+			}
+			return response;
+			return null;
+		}
+		public dynamic CancelSubscription(string subscriptionId)
+		{
+			InvokePaymentAccount(0);
+			SubscriptionResModel res = new SubscriptionResModel();
+			//Please change the subscriptionId according to your request
+			var request = new ARBCancelSubscriptionRequest { subscriptionId = subscriptionId };
+			var controller = new ARBCancelSubscriptionController(request);                          // instantiate the controller that will call the service
+			controller.Execute();
+
+			ARBCancelSubscriptionResponse response = controller.GetApiResponse();                   // get the response from the service (errors contained if any)
+
+			// validate response
+			if (response != null && response.messages.resultCode == messageTypeEnum.Ok)
+			{
+				if (response != null && response.messages.message != null)
+				{
+					res.StatusCode = 200;
+					res.Message = "Success";
+				}
+			}
+			else if (response != null)
+			{
+				res.StatusCode = 400;
+				res.Message = "Failed to cancel subscription,try again";
+			}
+
+			return res;
 		}
 		public PaymentTransaction ICYLeCheck(decimal Amount, bankAccountType bankAccount, customerAddressType CustomerInfo, orderType OrderInfo, nameAndAddressType MailTo, customerDataType CustData, int lkpCategory)
 		{
@@ -518,7 +686,33 @@ namespace ICYL.API.Repository
 			}
 			return obj;
 		}
+		public dynamic GetCustomerProfile(string transId)
+		{
+			InvokePaymentAccount(0);
+			var request = new getTransactionDetailsRequest();
+			request.transId = transId;
 
+			// instantiate the controller that will call the service
+			var controller = new getTransactionDetailsController(request);
+			controller.Execute();
+
+			// get the response from the service (errors contained if any)
+			var response = controller.GetApiResponse();
+			if (response.transaction.order != null && response.messages.resultCode == messageTypeEnum.Ok)
+				return response.transaction.order.description;
+			else
+				//if (response != null && response.messages.resultCode == messageTypeEnum.Ok)
+				//{
+				//	if (response.transaction == null)
+				//		return "exception";
+
+				//}
+				//else if (response != null)
+				//{
+				//	return response.transaction.order.description;
+				//}
+				return "";
+		}
 		public SubscriptionTransaction SetUpRecurringCharge(decimal Amount, paymentScheduleTypeInterval interval, paymentScheduleType schedule, creditCardType creditCardInfo
 						, nameAndAddressType BillTo, orderType orderInfo, nameAndAddressType MailTo, customerType customer, int lkpCategory)
 		{
@@ -707,18 +901,18 @@ namespace ICYL.API.Repository
 			List<PaymentBatch> lst = new List<PaymentBatch>();
 			DateTime firstSettlementDate = DateTime.Today;//DateTime.Today.Subtract(TimeSpan.FromDays(30));
 			DateTime lastSettlementDate = DateTime.Today; //DateTime.Today.AddDays(1);
-			//Console.WriteLine("First settlement date: {0} Last settlement date:{1}", firstSettlementDate,
-			//    lastSettlementDate);
-			if(report.TodayReport)
+														  //Console.WriteLine("First settlement date: {0} Last settlement date:{1}", firstSettlementDate,
+														  //    lastSettlementDate);
+			if (report.TodayReport)
 			{
 				request.firstSettlementDate = firstSettlementDate;
 				request.lastSettlementDate = lastSettlementDate;
 			}
 			else
 			{
-				request.firstSettlementDate = DateTime.Parse(report.StartDate+ "T16:00:00Z", CultureInfo.InvariantCulture);
+				request.firstSettlementDate = DateTime.Parse(report.StartDate + "T16:00:00Z", CultureInfo.InvariantCulture);
 				//request.firstSettlementDate = DateTime.ParseExact(report.StartDate, "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'", CultureInfo.InvariantCulture);
-				request.lastSettlementDate = DateTime.Parse(report.EndDate+"T16:00:00Z", CultureInfo.InvariantCulture);
+				request.lastSettlementDate = DateTime.Parse(report.EndDate + "T16:00:00Z", CultureInfo.InvariantCulture);
 			}
 			request.includeStatistics = true;
 
@@ -1007,6 +1201,7 @@ namespace ICYL.API.Repository
 					{
 						PayObj.PaymentConfigs.SubscriptionTransId = response.transaction.subscription.id.ToString();
 					}
+
 				}
 			}
 
@@ -1021,8 +1216,8 @@ namespace ICYL.API.Repository
 
 			//Production - General Fund
 
-			string ProductionapiLoginId = "439GpmpM797Z";
-			string ProductiontransactionKey = "66D2d6Nkg98yDEsh";
+			string ProductionapiLoginId = "4hZjM2X9q";
+			string ProductiontransactionKey = "746hAagW28dB94rb";
 			if (GlobalContext.VersionEnv().Trim().ToUpper() == GlobalContext.Env.TEST.ToString())
 			{
 				SetPaymentAccount(SandboxapiLoginId, SandboxtransactionKey, AuthorizeNet.Environment.SANDBOX);
