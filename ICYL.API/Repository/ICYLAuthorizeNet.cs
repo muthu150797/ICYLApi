@@ -283,6 +283,7 @@ namespace ICYL.API.Repository
 						res.Status = true;
 						res.Message = response.transactionResponse.messages[0].description;
 						res.TransactionId = response.transactionResponse.transId;
+						res.TransCode = response.transactionResponse.messages[0].code;
 						//Console.WriteLine("Successfully created an Apple pay transaction with Transaction ID: " + response.transactionResponse.transId);
 						//Console.WriteLine("Response Code: " + response.transactionResponse.responseCode);
 						//Console.WriteLine("Message Code: " + response.transactionResponse.messages[0].code);
@@ -295,6 +296,7 @@ namespace ICYL.API.Repository
 						{
 							res.Status = false;
 							res.Message = response.transactionResponse.errors[0].errorText;
+							res.TransCode = response.transactionResponse.errors[0].errorCode;
 							//Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
 							//Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText);
 						}
@@ -308,6 +310,8 @@ namespace ICYL.API.Repository
 					{
 						res.Status = false;
 						res.Message = response.transactionResponse.errors[0].errorText;
+						res.TransCode = response.transactionResponse.errors[0].errorCode;
+
 						//Console.WriteLine("Error Code: " + response.transactionResponse.errors[0].errorCode);
 						//Console.WriteLine("Error message: " + response.transactionResponse.errors[0].errorText);
 					}
@@ -315,6 +319,8 @@ namespace ICYL.API.Repository
 					{
 						res.Status = false;
 						res.Message = response.messages.message[0].text;
+						res.TransCode = response.messages.message[0].code;
+
 						//Console.WriteLine("Error Code: " + response.messages.message[0].code);
 						//Console.WriteLine("Error message: " + response.messages.message[0].text);
 					}
