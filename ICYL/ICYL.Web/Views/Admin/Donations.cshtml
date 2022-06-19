@@ -1,0 +1,369 @@
+﻿@model ICYL.BL.DonationSearch
+@using EnterpriseLayer.Utilities;
+
+@{
+    ViewBag.Title = "DonarLists";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h2 class="blue font-bold">
+                Donations
+            </h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="pull-right">
+
+            <button href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
+                &nbsp;  <i class="fa fa-download"></i> Download Transactions
+            </button>
+
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight">
+    @using (Html.BeginForm("Donations", "Admin", FormMethod.Post, new { id = "frmDonationSearch", @class = "form-inline", @role = "form" }))
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div>
+
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">TransactionId</label>
+                            @Html.TextBoxFor(model => model.TransId, new { @placeholder = "Trans Id", @class = "form-control", autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <label for="FromDate" class="sr-only">From Date</label>
+                            @Html.TextBoxFor(model => model.FromDate, new { @placeholder = "From Date", @class = "form-control", autocomplete = "off", @Id = "FromDate" })
+                        </div>
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">To Date</label>
+                            @Html.TextBoxFor(model => model.ToDate, new { @placeholder = "To Date", @class = "form-control", autocomplete = "off", @Id = "ToDate" })
+                        </div>
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">AuthCode</label>
+                            @Html.TextBoxFor(model => model.AuthCode, new { @placeholder = "AuthCode", @class = "form-control", autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <label for="First" class="sr-only">First Name</label>
+                            @Html.TextBoxFor(model => model.FirstName, new { @placeholder = "First Name", @class = "form-control", autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Last" class="sr-only">Last Name</label>
+                            @Html.TextBoxFor(model => model.LastName, new { @placeholder = "Last Name", @class = "form-control", autocomplete = "off" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div>
+
+                        <div class="form-group">
+                            <label for="First" class="sr-only">First Name (Second)</label>
+                            @Html.TextBoxFor(model => model.FirstNameSecond, new { @placeholder = "First Name (Second)", @class = "form-control", autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Last" class="sr-only">Last Name (Second)</label>
+                            @Html.TextBoxFor(model => model.LastNameSecond, new { @placeholder = "Last Name (Second)", @class = "form-control", autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Email" class="sr-only">Email</label>
+                            @Html.TextBoxFor(model => model.Email, new { @placeholder = "Email", @class = "form-control", autocomplete = "off" })
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">Payment Type</label>
+                            @Html.DropDownListFor(model => model.PaymentType, new SelectList(Model.lstPaymentType, "Value", "Text"), "All Payment Type", new { @class = "form-control single-line", id = "PaymentType" })
+                        </div>
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">Donation Category</label>
+                            @Html.DropDownListFor(model => model.lkpDonationCategory, new SelectList(Model.lstCategory, "Value", "Text", Model.lkpDonationCategory), "All Categories", new { @class = "form-control single-line", id = "lkpDonationCategory" })
+                        </div>
+                        <div class="form-group">
+                            <label for="ToDate" class="sr-only">Donation Category</label>
+                            @Html.DropDownListFor(model => model.TransResponseCode, new SelectList(Model.lstTransResponseCode, "Value", "Text", Model.TransResponseCode), "All Transactions", new { @class = "form-control single-line", id = "lkpDonationCategory" })
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="search-list" class="btn btn-primary">
+                                <i class="fa fa-search"></i>
+                                Search
+                            </button>
+                            <button type="button" id="search-clear" class="btn">
+                                <i class="fa fa-refresh"></i>
+                                Clear
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div>
+                            <table id="tblDonations" class="table table-striped table-bordered table-hover dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Full Name (Second)</th>
+                                        <th>Phone #</th>
+                                        <th>Email</th>
+                                        <th>Payment Type</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Payment Date</th>
+                                        <th>Trans Id</th>
+                                        <th>AuthCode</th>
+                                        <th>Description</th>
+                                        <th>Error</th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        @*<th>Edit</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (Model != null)
+                                        {
+                                            if (Model.SearchResult != null)
+                                            {
+                                                foreach (var item in Model.SearchResult)
+                                                {
+                                                        <tr>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.FullNameFirst))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.FullNameSecond))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.PhoneNumber))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.EmailId))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.PaymentType))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.DonationCategory))</td>
+                                                            <td class="left">@MvcHtmlString.Create(string.Format("{0:C2}", item.AmtTransaction))</td>
+                                                            <td class="left">@MvcHtmlString.Create(string.Format("{0:MM/dd/yyyy}", item.CreatedOn))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.TransId))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.TransAuthCode))</td>
+                                                            <td class="left">@MvcHtmlString.Create(Conversion.ConversionToString(item.TransDescription))</td>
+                                                            <td class="left"> @MvcHtmlString.Create(String.Format("{0} {1}", Conversion.ConversionToString(item.TransErrorCode), Conversion.ConversionToString(item.TransErrorText)))</td>
+                                                            <td class="left">
+                                                                <a onclick="javascript: return loadSendMail('@item.TransactionId');" href="#" title="Send Receipt">
+                                                                    &nbsp; <i class="fa fa-envelope green"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td class="left">
+                                                                <a  href="@Url.Action("DownloadDonationReceipt","Admin", new { @transactionId=item.TransactionId })"><i class="fa fa-download green"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <i class="fa fa-laptop modal-icon"></i>
+                <div>Last Downloaded:<label id="">@ViewBag.LastUpdated</label></div>
+                <h4 class="modal-title">Downloading Transactions</h4>
+                <div>Download Last <input id="txtDownloadDays" value="@ViewBag.DownLoaddays" maxlength="3" size="3" /> Days records </div>
+                <div>&nbsp;</div>
+                <a class="btn btn-warning" href="#" onclick="javascript: return DownloadTransactions();">Click here to start downloading...</a>
+            </div>
+            <div class="modal-body text-center">
+                <div id="divSpinner" class="sk-spinner sk-spinner-fading-circle hide">
+                    <div class="sk-circle1 sk-circle"></div>
+                    <div class="sk-circle2 sk-circle"></div>
+                    <div class="sk-circle3 sk-circle"></div>
+                    <div class="sk-circle4 sk-circle"></div>
+                    <div class="sk-circle5 sk-circle"></div>
+                    <div class="sk-circle6 sk-circle"></div>
+                    <div class="sk-circle7 sk-circle"></div>
+                    <div class="sk-circle8 sk-circle"></div>
+                    <div class="sk-circle9 sk-circle"></div>
+                    <div class="sk-circle10 sk-circle"></div>
+                    <div class="sk-circle11 sk-circle"></div>
+                    <div class="sk-circle12 sk-circle"></div>
+                </div>
+                <h3 id="msg" class="hide">Download completed.</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Modal Sectiont to Edit Transaction-->
+<div class="modal inmodal mEditTran" id="modal-EditTran" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight" id="dvEditTran">
+            @*@Html.Partial("_EditTransaction")*@
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal mMailReceipt" id="modal-MailReceipt" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight" id="dvMailReceipt">
+            @*@Html.Partial("_MailReceipt")*@
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/plugins/toastrStyles")
+    @*@Styles.Render("~/content/jqueryUItimepickerStyle")*@
+
+}
+
+@section scripts{
+
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Scripts.Render("~/plugins/validate")
+    @*@Scripts.Render("~/plugins/jasnyBootstrap")*@
+    @Scripts.Render("~/plugins/toastr")
+    @*@Scripts.Render("~/bundles/jqueryUItimepicker")*@
+    @Scripts.Render("~/Scripts/plugins/dataTables/datatables.min.js")
+    @Scripts.Render(" ~/bundles/jqueryui")
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#FromDate').datepicker({});
+            $('#ToDate').datepicker({});
+            $('#tblDonations_filter').addClass('pull-right');
+            $('#tblDonations_paginate').addClass('pull-right');
+
+            $('#tblDonations').DataTable({
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Donations', className: 'btn-outline', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'pdf', title: 'Donations', className: 'btn-outline',orientation: 'landscape', exportOptions: { columns: [0, 1,2,3, 4, 5, 6, 7, 8,9 ] } },
+
+                    {
+                        extend: 'print', className: 'btn-outline', exportOptions: { columns: 'th:not(:last-child)' },
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+            $('.html5buttons').addClass('pull-right');
+
+
+        });
+        function DownloadTransactions() {
+            //swal({
+            //    title: "Download Transactions.",
+            //    text: "Download is disabled temporarily."
+            //});
+            var noDays = $('#txtDownloadDays').val();
+            $('#divSpinner').removeClass('hide');
+
+            setTimeout(
+                function() {
+                               $.ajax({
+                                url: "@Url.Action("DownloadBatchesAndTransactions", "Admin")",
+                                type: "POST",
+                                data: JSON.stringify({ Days: noDays}),
+                                contentType: "application/json; charset=utf-8",
+                                async: false,
+                                cache: false,
+                                success: function (data) {
+                                    $('#divSpinner').addClass('hide');
+                                    $('#msg').removeClass('hide');
+
+                                    //$('#myModal').modal('hide');
+                                },
+                                failure: function (response) {
+                                    toastr.clear();
+                                }
+                               });
+             }, 100);
+        }
+
+        $("#search-clear").click(function () {
+        $("#FirstName").val('')
+        $("#LastName").val('')
+        $("#FirstNameSecond").val('');
+        $("#LastNameSecond").val('');
+        $("#Email").val('')
+        $("#TransId").val('')
+        $("#AuthCode").val('')
+        $("#PaymentType").prop("selectedIndex", 0);
+        });
+
+        function loadSendMail(id) {
+                    $.ajax({
+                        url: "@Url.Action("SendMailReceipt", "Admin")",
+                        type: "POST",
+                        data: JSON.stringify({ transactionId: id}),
+                    contentType: "application/json; charset=utf-8",
+                    async: false,
+                    cache: false,
+                    success: function (data) {
+                        $("#dvMailReceipt").html(data);
+                        $('#modal-MailReceipt').modal('show');
+                    },
+                    failure: function (response) {
+                        alert("error");
+                    }
+                })
+        }
+
+    function DownloadReceipt(id) {
+        $.ajax({
+            url: "@Url.Action("DownloadDonationReceipt", "Admin")",
+            type: "POST",
+            data: JSON.stringify({ transactionId: id }),
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            cache: false,
+            success: function (data) {
+                $("#dvEditTran").html(data);
+                $('#modal-EditTran').modal('show');
+            },
+            failure: function (response) {
+                alert("error");
+            }
+        });
+    }
+
+        
+
+</script>
+}
+
+

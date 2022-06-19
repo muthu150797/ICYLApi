@@ -1,0 +1,520 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ICYLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ICYLEmail">
+          <Key>
+            <PropertyRef Name="EmailId" />
+          </Key>
+          <Property Name="EmailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="100" />
+          <Property Name="Body" Type="nvarchar(max)" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ICYL.dbo.LookupGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="LookupGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupName" Type="varchar" MaxLength="20" />
+          <Property Name="GroupDescription" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ICYL.dbo.LookupValue' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="LookupValue">
+          <Key>
+            <PropertyRef Name="ValueId" />
+          </Key>
+          <Property Name="ValueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="int" />
+          <Property Name="Value" Type="varchar" MaxLength="50" />
+          <Property Name="ValueDescription" Type="varchar" MaxLength="100" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="DisplayOrder" Type="int" />
+          <Property Name="APIId" Type="nvarchar" MaxLength="200" />
+          <Property Name="APIKey" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="PaymentBatch">
+          <Key>
+            <PropertyRef Name="BatchId" />
+          </Key>
+          <Property Name="BatchId" Type="int" Nullable="false" />
+          <Property Name="settlementTimeUTC" Type="datetime" />
+          <Property Name="settlementTimeLocal" Type="datetime" />
+          <Property Name="settlementState" Type="varchar" MaxLength="50" />
+          <Property Name="marketType" Type="varchar" MaxLength="50" />
+          <Property Name="product" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PaymentConfig">
+          <Key>
+            <PropertyRef Name="PaymentConfigId" />
+          </Key>
+          <Property Name="PaymentConfigId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AmtDonation" Type="money" Nullable="false" />
+          <Property Name="AmtTransactionPaid" Type="money" Nullable="false" />
+          <Property Name="RecurringType" Type="varchar" MaxLength="20" />
+          <Property Name="IsCreditCard" Type="bit" />
+          <Property Name="IsECheck" Type="bit" />
+          <Property Name="IsMailInCheck" Type="bit" />
+          <Property Name="IsAnonymous" Type="bit" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="100" />
+          <Property Name="EmailId" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Comments" Type="varchar" MaxLength="250" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="15" />
+          <Property Name="lkpDonationCategory" Type="int" Nullable="false" />
+          <Property Name="BillingAddressLine1" Type="varchar" MaxLength="50" />
+          <Property Name="BillingAddressLine2" Type="varchar" MaxLength="100" />
+          <Property Name="BillingCity" Type="varchar" MaxLength="100" />
+          <Property Name="BillingState" Type="varchar" MaxLength="50" />
+          <Property Name="BillingZip" Type="varchar" MaxLength="10" />
+          <Property Name="BillingCountry" Type="varchar" MaxLength="50" />
+          <Property Name="CCNum" Type="varchar" MaxLength="20" />
+          <Property Name="CCCvc" Type="varchar" MaxLength="10" />
+          <Property Name="CCHolderName" Type="varchar" MaxLength="50" />
+          <Property Name="CCExpiry" Type="char" MaxLength="5" />
+          <Property Name="BankRoutingNum" Type="varchar" MaxLength="20" />
+          <Property Name="BankAccountNum" Type="varchar" MaxLength="20" />
+          <Property Name="BankNameOnAccount" Type="varchar" MaxLength="50" />
+          <Property Name="BankAccountType" Type="varchar" MaxLength="30" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="PaymentType" Type="int" />
+          <Property Name="SubscriptionTransId" Type="varchar" MaxLength="100" />
+          <Property Name="SubscriptionResponseCode" Type="varchar" MaxLength="100" />
+          <Property Name="SubscriptionResponseText" Type="varchar" MaxLength="250" />
+          <Property Name="MailingAddressLine1" Type="varchar" MaxLength="50" />
+          <Property Name="MailingAddressLine2" Type="varchar" MaxLength="50" />
+          <Property Name="MailingCity" Type="varchar" MaxLength="100" />
+          <Property Name="MailingState" Type="varchar" MaxLength="50" />
+          <Property Name="MailingZip" Type="varchar" MaxLength="10" />
+          <Property Name="MailingCountry" Type="varchar" MaxLength="50" />
+          <Property Name="CustomerProfileId" Type="varchar" MaxLength="50" />
+          <Property Name="CustomerAddressId" Type="varchar" MaxLength="50" />
+          <Property Name="dtPaymentStart" Type="datetime" />
+          <Property Name="dtPaymentEnd" Type="datetime" />
+          <Property Name="PaymentEndType" Type="int" />
+          <Property Name="PaymentMaxOccurences" Type="int" />
+          <Property Name="isDownloaded" Type="bit" />
+          <Property Name="RecurringInterval" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PaymentTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentConfigId" Type="int" Nullable="false" />
+          <Property Name="AmtTransaction" Type="money" Nullable="false" />
+          <Property Name="TransId" Type="varchar" MaxLength="100" />
+          <Property Name="TransResponseCode" Type="varchar" MaxLength="100" />
+          <Property Name="TransMessageCode" Type="varchar" MaxLength="100" />
+          <Property Name="TransDescription" Type="varchar" MaxLength="250" />
+          <Property Name="TransAuthCode" Type="varchar" MaxLength="100" />
+          <Property Name="TransErrorCode" Type="varchar" MaxLength="100" />
+          <Property Name="TransErrorText" Type="varchar" MaxLength="250" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="BatchId" Type="int" />
+          <Property Name="CustomerProfileId" Type="varchar" MaxLength="50" />
+          <Property Name="CustomerAddressId" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Function Name="ICYLReceipt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="ICYLModelStoreContainer">
+          <EntitySet Name="ICYLEmail" EntityType="Self.ICYLEmail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentBatch" EntityType="Self.PaymentBatch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentConfig" EntityType="Self.PaymentConfig" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentTransaction" EntityType="Self.PaymentTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LookupGroup" EntityType="Self.LookupGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [LookupGroup].[GroupId] AS [GroupId], 
+    [LookupGroup].[GroupName] AS [GroupName], 
+    [LookupGroup].[GroupDescription] AS [GroupDescription], 
+    [LookupGroup].[CreatedBy] AS [CreatedBy], 
+    [LookupGroup].[CreatedOn] AS [CreatedOn], 
+    [LookupGroup].[ModifiedBy] AS [ModifiedBy], 
+    [LookupGroup].[ModifiedOn] AS [ModifiedOn]
+    FROM [dbo].[LookupGroup] AS [LookupGroup]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="LookupValue" EntityType="Self.LookupValue" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [LookupValue].[ValueId] AS [ValueId], 
+    [LookupValue].[GroupId] AS [GroupId], 
+    [LookupValue].[Value] AS [Value], 
+    [LookupValue].[ValueDescription] AS [ValueDescription], 
+    [LookupValue].[Active] AS [Active], 
+    [LookupValue].[CreatedBy] AS [CreatedBy], 
+    [LookupValue].[CreatedOn] AS [CreatedOn], 
+    [LookupValue].[ModifiedBy] AS [ModifiedBy], 
+    [LookupValue].[ModifiedOn] AS [ModifiedOn], 
+    [LookupValue].[DisplayOrder] AS [DisplayOrder], 
+    [LookupValue].[APIId] AS [APIId], 
+    [LookupValue].[APIKey] AS [APIKey]
+    FROM [dbo].[LookupValue] AS [LookupValue]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ICYLModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="PaymentConfig">
+          <Key>
+            <PropertyRef Name="PaymentConfigId" />
+          </Key>
+          <Property Name="AmtDonation" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="AmtTransactionPaid" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="RecurringType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IsCreditCard" Type="Boolean" />
+          <Property Name="IsECheck" Type="Boolean" />
+          <Property Name="IsMailInCheck" Type="Boolean" />
+          <Property Name="IsAnonymous" Type="Boolean" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Comments" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="lkpDonationCategory" Type="Int32" Nullable="false" />
+          <Property Name="BillingAddressLine1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BillingAddressLine2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="BillingCity" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="BillingState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BillingZip" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="BillingCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CCNum" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CCCvc" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CCHolderName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CCExpiry" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="BankRoutingNum" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BankAccountNum" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BankNameOnAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BankAccountType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="PaymentConfigId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentType" Type="Int32" />
+          <Property Name="SubscriptionTransId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SubscriptionResponseCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SubscriptionResponseText" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="MailingAddressLine1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MailingAddressLine2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MailingCity" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MailingState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MailingZip" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MailingCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerProfileId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerAddressId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dtPaymentStart" Type="DateTime" Precision="3" />
+          <Property Name="dtPaymentEnd" Type="DateTime" Precision="3" />
+          <Property Name="PaymentEndType" Type="Int32" />
+          <Property Name="PaymentMaxOccurences" Type="Int32" />
+          <Property Name="isDownloaded" Type="Boolean" />
+          <Property Name="RecurringInterval" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PaymentTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AmtTransaction" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PaymentConfigId" Type="Int32" Nullable="false" />
+          <Property Name="TransId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransResponseCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransMessageCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransDescription" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="TransAuthCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransErrorCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransErrorText" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="BatchId" Type="Int32" />
+          <Property Name="CustomerProfileId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerAddressId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="LookupGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="GroupDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LookupValue">
+          <Key>
+            <PropertyRef Name="ValueId" />
+          </Key>
+          <Property Name="ValueId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int32" />
+          <Property Name="Value" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ValueDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="DisplayOrder" Type="Int32" />
+          <Property Name="APIId" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="APIKey" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="ICYLEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="PaymentConfigs" EntityType="Self.PaymentConfig" />
+          <EntitySet Name="PaymentTransactions" EntityType="Self.PaymentTransaction" />
+          <EntitySet Name="LookupGroups" EntityType="Self.LookupGroup" />
+          <EntitySet Name="LookupValues" EntityType="Self.LookupValue" />
+          <EntitySet Name="PaymentBatches" EntityType="ICYLModel.PaymentBatch" />
+          <FunctionImport Name="ICYLReceipt" ReturnType="Collection(ICYLModel.ICYLReceipt_Result)" />
+          <EntitySet Name="ICYLEmails" EntityType="ICYLModel.ICYLEmail" />
+        </EntityContainer>
+        <EntityType Name="PaymentBatch">
+          <Key>
+            <PropertyRef Name="BatchId" />
+          </Key>
+          <Property Name="BatchId" Type="Int32" Nullable="false" />
+          <Property Name="settlementTimeUTC" Type="DateTime" Precision="3" />
+          <Property Name="settlementTimeLocal" Type="DateTime" Precision="3" />
+          <Property Name="settlementState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="marketType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="product" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <ComplexType Name="ICYLReceipt_Result">
+          <Property Type="String" Name="MemberId" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="EmailId" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="MemberName" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="CardHolderName" Nullable="false" MaxLength="1" />
+          <Property Type="Boolean" Name="IsRecurringTransaction" Nullable="true" />
+          <Property Type="String" Name="RecurringTransaction" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Freequency" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="LastFour" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="PaymentType" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="TransactionType" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Category" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Amount" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="ApprovalCode" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="ConfirmationNumber" Nullable="false" MaxLength="1" />
+        </ComplexType>
+        <EntityType Name="ICYLEmail">
+          <Key>
+            <PropertyRef Name="EmailId" />
+          </Key>
+          <Property Name="EmailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ICYLModelStoreContainer" CdmEntityContainer="ICYLEntities">
+          <EntitySetMapping Name="PaymentConfigs">
+            <EntityTypeMapping TypeName="ICYLModel.PaymentConfig">
+              <MappingFragment StoreEntitySet="PaymentConfig">
+                <ScalarProperty Name="RecurringInterval" ColumnName="RecurringInterval" />
+                <ScalarProperty Name="isDownloaded" ColumnName="isDownloaded" />
+                <ScalarProperty Name="PaymentMaxOccurences" ColumnName="PaymentMaxOccurences" />
+                <ScalarProperty Name="PaymentEndType" ColumnName="PaymentEndType" />
+                <ScalarProperty Name="dtPaymentEnd" ColumnName="dtPaymentEnd" />
+                <ScalarProperty Name="dtPaymentStart" ColumnName="dtPaymentStart" />
+                <ScalarProperty Name="CustomerAddressId" ColumnName="CustomerAddressId" />
+                <ScalarProperty Name="CustomerProfileId" ColumnName="CustomerProfileId" />
+                <ScalarProperty Name="MailingCountry" ColumnName="MailingCountry" />
+                <ScalarProperty Name="MailingZip" ColumnName="MailingZip" />
+                <ScalarProperty Name="MailingState" ColumnName="MailingState" />
+                <ScalarProperty Name="MailingCity" ColumnName="MailingCity" />
+                <ScalarProperty Name="MailingAddressLine2" ColumnName="MailingAddressLine2" />
+                <ScalarProperty Name="MailingAddressLine1" ColumnName="MailingAddressLine1" />
+                <ScalarProperty Name="SubscriptionResponseText" ColumnName="SubscriptionResponseText" />
+                <ScalarProperty Name="SubscriptionResponseCode" ColumnName="SubscriptionResponseCode" />
+                <ScalarProperty Name="SubscriptionTransId" ColumnName="SubscriptionTransId" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentConfigId" ColumnName="PaymentConfigId" />
+                <ScalarProperty Name="AmtDonation" ColumnName="AmtDonation" />
+                <ScalarProperty Name="AmtTransactionPaid" ColumnName="AmtTransactionPaid" />
+                <ScalarProperty Name="RecurringType" ColumnName="RecurringType" />
+                <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
+                <ScalarProperty Name="IsECheck" ColumnName="IsECheck" />
+                <ScalarProperty Name="IsMailInCheck" ColumnName="IsMailInCheck" />
+                <ScalarProperty Name="IsAnonymous" ColumnName="IsAnonymous" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="lkpDonationCategory" ColumnName="lkpDonationCategory" />
+                <ScalarProperty Name="BillingAddressLine1" ColumnName="BillingAddressLine1" />
+                <ScalarProperty Name="BillingAddressLine2" ColumnName="BillingAddressLine2" />
+                <ScalarProperty Name="BillingCity" ColumnName="BillingCity" />
+                <ScalarProperty Name="BillingState" ColumnName="BillingState" />
+                <ScalarProperty Name="BillingZip" ColumnName="BillingZip" />
+                <ScalarProperty Name="BillingCountry" ColumnName="BillingCountry" />
+                <ScalarProperty Name="CCNum" ColumnName="CCNum" />
+                <ScalarProperty Name="CCCvc" ColumnName="CCCvc" />
+                <ScalarProperty Name="CCHolderName" ColumnName="CCHolderName" />
+                <ScalarProperty Name="CCExpiry" ColumnName="CCExpiry" />
+                <ScalarProperty Name="BankRoutingNum" ColumnName="BankRoutingNum" />
+                <ScalarProperty Name="BankAccountNum" ColumnName="BankAccountNum" />
+                <ScalarProperty Name="BankNameOnAccount" ColumnName="BankNameOnAccount" />
+                <ScalarProperty Name="BankAccountType" ColumnName="BankAccountType" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentTransactions">
+            <EntityTypeMapping TypeName="ICYLModel.PaymentTransaction">
+              <MappingFragment StoreEntitySet="PaymentTransaction">
+                <ScalarProperty Name="CustomerAddressId" ColumnName="CustomerAddressId" />
+                <ScalarProperty Name="CustomerProfileId" ColumnName="CustomerProfileId" />
+                <ScalarProperty Name="BatchId" ColumnName="BatchId" />
+                <ScalarProperty Name="TransErrorText" ColumnName="TransErrorText" />
+                <ScalarProperty Name="TransErrorCode" ColumnName="TransErrorCode" />
+                <ScalarProperty Name="TransAuthCode" ColumnName="TransAuthCode" />
+                <ScalarProperty Name="TransDescription" ColumnName="TransDescription" />
+                <ScalarProperty Name="TransMessageCode" ColumnName="TransMessageCode" />
+                <ScalarProperty Name="TransResponseCode" ColumnName="TransResponseCode" />
+                <ScalarProperty Name="TransId" ColumnName="TransId" />
+                <ScalarProperty Name="PaymentConfigId" ColumnName="PaymentConfigId" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="AmtTransaction" ColumnName="AmtTransaction" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LookupGroups">
+            <EntityTypeMapping TypeName="ICYLModel.LookupGroup">
+              <MappingFragment StoreEntitySet="LookupGroup">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupDescription" ColumnName="GroupDescription" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LookupValues">
+            <EntityTypeMapping TypeName="ICYLModel.LookupValue">
+              <MappingFragment StoreEntitySet="LookupValue">
+                <ScalarProperty Name="APIKey" ColumnName="APIKey" />
+                <ScalarProperty Name="APIId" ColumnName="APIId" />
+                <ScalarProperty Name="ValueId" ColumnName="ValueId" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="ValueDescription" ColumnName="ValueDescription" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentBatches">
+            <EntityTypeMapping TypeName="ICYLModel.PaymentBatch">
+              <MappingFragment StoreEntitySet="PaymentBatch">
+                <ScalarProperty Name="product" ColumnName="product" />
+                <ScalarProperty Name="marketType" ColumnName="marketType" />
+                <ScalarProperty Name="settlementState" ColumnName="settlementState" />
+                <ScalarProperty Name="settlementTimeLocal" ColumnName="settlementTimeLocal" />
+                <ScalarProperty Name="settlementTimeUTC" ColumnName="settlementTimeUTC" />
+                <ScalarProperty Name="BatchId" ColumnName="BatchId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ICYLReceipt" FunctionName="ICYLModel.Store.ICYLReceipt">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ICYLModel.ICYLReceipt_Result">
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
+                <ScalarProperty Name="CardHolderName" ColumnName="CardHolderName" />
+                <ScalarProperty Name="IsRecurringTransaction" ColumnName="IsRecurringTransaction" />
+                <ScalarProperty Name="RecurringTransaction" ColumnName="RecurringTransaction" />
+                <ScalarProperty Name="Freequency" ColumnName="Freequency" />
+                <ScalarProperty Name="LastFour" ColumnName="LastFour" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ApprovalCode" ColumnName="ApprovalCode" />
+                <ScalarProperty Name="ConfirmationNumber" ColumnName="ConfirmationNumber" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="ICYLEmails">
+            <EntityTypeMapping TypeName="ICYLModel.ICYLEmail">
+              <MappingFragment StoreEntitySet="ICYLEmail">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

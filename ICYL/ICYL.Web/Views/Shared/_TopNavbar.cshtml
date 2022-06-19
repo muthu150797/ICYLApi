@@ -1,0 +1,58 @@
+﻿@using ICYL.Repository
+@{ 
+    string MenuDonorList = ViewBag.MenuDonorList;
+    string MenuDonations = ViewBag.MenuDonations;
+    string MenuSettings = ViewBag.MenuSettings;
+
+}
+<nav class="navbar navbar-static-top border-bottom" role="navigation">
+    <div class="navbar-header">
+        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <i class="fa fa-reorder"></i>
+        </button>
+        <a href="@Url.Action("Index","Home")" class="navbar-brand"><img src="~/images/Logo/logo.png" />  </a>
+        <h2>Islamic Center Of Yorba Linda</h2>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+        @{
+            if (GlobalContext.Role == GlobalContext.eRoles.Admin.ToString())
+            {
+                <ul class="nav navbar-nav">
+                    <li class="MenuDonorList">
+                        <a aria-expanded="false" role="button" href="@Url.Action("DonorList","Admin")">Donors List</a>
+                    </li>
+                    <li class="MenuDonations">
+                        <a aria-expanded="false" role="button" href="@Url.Action("Donations","Admin")">Donations</a>
+                    </li>
+                    <li class="dropdown MenuSettings">
+                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Settings <span class="caret"></span></a>
+                        <ul role="menu" class="dropdown-menu">
+                            @*<li><a href="@Url.Action("Settings","Account")">Data Settings</a></li>*@
+                            <li><a href="@Url.Action("LookupCategoryList","Lookup")">Donation Categories</a></li>
+                            <li><a href="@Url.Action("Index","Email")">Email Settings</a></li>
+                            <li><a href="@Url.Action("ChangePassword","Manage")">Change Password</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="@Url.Action("LogOff","Account")">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            }
+
+            else
+            {
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="@Url.Action("Login","Account")">
+                            <i class="fa fa-sign-out"></i> Login 
+                        </a>
+                    </li>
+                </ul>
+            }
+        }
+    </div>
+</nav>

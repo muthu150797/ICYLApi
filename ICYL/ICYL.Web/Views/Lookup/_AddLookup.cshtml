@@ -1,0 +1,72 @@
+﻿@using EnterpriseLayer.Utilities;
+@model ICYL.BL.LookupValueBL
+@{
+    ViewBag.Title = "Streets";
+}
+    <style>
+        .input-readonly {
+            background-color: #FFF !important;
+        }
+    </style>
+<div class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="text-capitalize">Manage Lookup</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3 class="text-danger" id="hErrorMsgPop"></h3>
+            <h3 class="text-success" id="hSuccessMsgPop"></h3>
+        </div>
+    </div>
+    @using (Html.BeginForm("NewLookupPost", "Lookup", FormMethod.Post, new { id = "LookupPopupfrm" }))
+    {
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="ibox-content">
+                    <div class="form-group">
+                        @Html.Label("Group", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.GroupId, new SelectList(Model.lookupGrouplst, "GroupId", "GroupName"), "Select", new { @class = "form-control single-line input-readonly", id = "GroupId", @disabled= "disabled" })
+                            @Html.ValidationMessageFor(x => x.GroupId, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(x=>x.GroupId)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Value", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.Value, new { @class = "form-control", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(x => x.Value, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Description", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.ValueDescription)
+                            @Html.ValidationMessageFor(x => x.ValueDescription, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Display Order", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.DisplayOrder, new { @class = "form-control", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(x => x.DisplayOrder, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class=" col-lg-offset-3  col-md-8">
+                            <button type="submit" id="save-Lookup" class="btn  btn-default">
+                                <i class="fa fa-save"></i>
+                                Save
+                            </button>
+                            <button class="btn text-white bg-gray" data-dismiss="modal" onclick="window.location.reload();"> <i class="fa fa-close"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

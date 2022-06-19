@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <title>ICYL </title>
+    <link rel="apple-touch-icon" sizes="57x57" href="~/images/Logo/apple-icon-57x57-precomposed.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="~/images/Logo/apple-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="~/images/Logo/apple-icon-114x114-precomposed.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="~/images/Logo/apple-icon-144x144-precomposed.png" />>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <!-- Add local styles, mostly for plugins css file -->
+    @if (IsSectionDefined("Styles"))
+    {@RenderSection("Styles", required: false)}
+
+    <!-- Add jQuery Style direct - used for jQGrid plugin -->
+    <link href="@Url.Content("~/Scripts/plugins/jquery-ui/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/font-awesome/css")
+    @Styles.Render("~/plugins/summernoteStyles")
+    <script type="text/javascript">
+        var ROOT = '@Url.Content("~/")';
+    </script>
+    @Scripts.Render("~/scripts/ConstantAndRedirect.js")
+
+</head>
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom white-bg">
+                <!-- Top Navbar -->
+                @Html.Partial("_TopNavbar")
+
+                <div class="wrapper wrapper-content">
+                    <div class="container full-width">
+                        @RenderBody()
+                    </div>
+                </div>
+                <!-- Footer -->
+                @Html.Partial("_Footer")
+            </div>
+        </div>
+    </div>
+
+    <!-- Section for main scripts render -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/slimScroll")
+    @Scripts.Render("~/bundles/inspinia")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")
+    @*@Styles.Render("~/plugins/sweetAlertStyles")
+        @Scripts.Render("~/plugins/sweetAlert")*@
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/jasny")
+    @Scripts.Render("~/Scripts/plugins/jasny/jasny-bootstrap.min.js")
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/plugins/toastr")
+    @RenderSection("scripts", required: false)
+    </body>
+</html>
+
+

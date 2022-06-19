@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "Settingss";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget green-bg text-black">
+            <h2 class="blue font-bold">
+                Settings
+            </h2>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div>
+                    @using (Html.BeginForm("DonationSearch", "Admin", FormMethod.Post, new { id = "frmDonationSearch", @class = "form-Vertical", @role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            <div class="i-checks"><label> <input type="checkbox" value=""> <i></i>Store Sensitive Info in Database (CC#, Bank A/C info.) </label></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="i-checks"><label> <input type="checkbox" value=""> <i></i>Encrypt Sensitive information like Phone#, Email and CC#, Bank A/C info </label></div>
+                        </div> 
+                        <button class="btn btn-sm btn-primary m-t-n-xs" type="submit"><strong>Submit</strong></button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

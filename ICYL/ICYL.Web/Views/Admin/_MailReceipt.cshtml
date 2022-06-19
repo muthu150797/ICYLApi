@@ -1,0 +1,118 @@
+﻿
+@model ICYL.BL.EmailReceipt
+@using EnterpriseLayer.Utilities;
+@using System.Web.Mvc;
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+<div id="divGHeader" class="modal-header ">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <h4 class="modal-title">EMAIL DONATION RECEIPT</h4>
+    <h2></h2>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3 class="text-danger" id="hErrorMsg"></h3>
+            <h3 class="text-success" id="hSuccessMsg"></h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            @using (Html.BeginForm("SendMailReceiptPost", "Admin", FormMethod.Post, new { id = "frmSendMail", @class = "form-horizontal", @role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, String.Empty, new { @class = "text-danger" })
+
+                @*<div id="dvMessage"></div>*@
+                if (Model != null)
+                {
+                    @Html.HiddenFor(model => model.TransactionId)
+                    @Html.HiddenFor(model => model.FirstName)
+                    @Html.HiddenFor(model => model.LastName)
+                    @Html.HiddenFor(model => model.lkpDonationCategory)
+                    @Html.HiddenFor(model => model.CardHolderName)
+                    @Html.HiddenFor(model => model.RecurringType)
+                    @Html.HiddenFor(model => model.PaymentType)
+                    @Html.HiddenFor(model => model.ConfirmationNumber)
+                    @Html.HiddenFor(model => model.AmtDonation)
+                    @Html.HiddenFor(model => model.TransactionDate)
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Name:</label>
+                                @Html.DisplayFor(model => model.FullName, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Donation Amount: $</label>
+                                @Html.DisplayFor(model => model.AmtDonation, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Category:</label>
+                                @Html.DisplayFor(model => model.DonationCategory, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.EmailId, new { @placeholder = "Email", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.EmailId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" aria-label="Close">Close</button>
+                        <button id="btnSendMail" class="btn btn-primary" type="submit" title="Send Mail">Send Donation Receipt</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+@Styles.Render("~/plugins/toastrStyles")
+@Scripts.Render("~/plugins/toastr")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.mMailReceipt').on('submit', '#frmSendMail', function (e) {
+            var url = $('#frmSendMail')[0].action;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $('#frmSendMail').serialize(),
+                success: function (data) {
+                    if (data.status != null) {
+                        if (data.status) {
+                            $("#hSuccessMsg").html(data.Msg);
+                            $("#hErrorMsg").html('');
+                        }
+                        else {
+                            $("#hErrorMsg").html('An error occured while saving the User');
+                            $("#hSuccessMsg").html('');
+                        }
+                    }
+                    else {
+                        $.each(data, function () {
+                            $("#hErrorMsg").html(this.ErrorMessage);
+                            $("#hSuccessMsg").html('');
+                        });
+                    }
+                }
+            })
+            e.preventDefault();
+        });
+    });
+</script>

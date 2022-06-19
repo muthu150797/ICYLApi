@@ -1,0 +1,321 @@
+﻿@model ICYL.BL.LookupValueBLList
+@using ICYL.BL
+@using EnterpriseLayer.Utilities;
+@{
+    ViewBag.Title = "Lookup List";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+@section Styles {  @Styles.Render("~/content/jqueryUItimepickerStyle") }
+<div class="row wrapper border-bottom  page-heading">
+    <div class="col-lg-12">
+        <h2 class="blue font-bold">
+            Configuration List
+        </h2>
+        <div class="pull-right">
+            @if (@Model.GroupId > 0)
+            {
+                <a href="#" onclick="javascript: return LoadLookupPopup(0,'@Model.GroupId');" class="btn btn-default">
+                    <i class="fa fa-plus-square"></i>
+                    Add New
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h3 class="text-danger" id="hErrorMsg"></h3>
+        <h3 class="text-success" id="hSuccessMsg"></h3>
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div>
+                    @using (Html.BeginForm("LookupListPost", "Lookup", FormMethod.Post, new { id = "frmLookup", @class = "form-inline", @role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        <div class="form-group">
+                            @Html.DropDownListFor(model => model.GroupId, new SelectList(Model.lookupGrouplst, "GroupId", "GroupName"), "Select", new { @placeholder = "Lookup Group", @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label for="Value" class="sr-only">Value</label>
+                            @Html.TextBoxFor(model => model.Value, new { @placeholder = "Value", @class = "form-control", @autocomplete = "off" })
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="search-submit" class="btn btn-primary btn-search">
+                                <i class="fa fa-search"></i>
+                                Search
+                            </button>
+                            <button type="button" id="search-clear" class="btn text-white bg-gray">
+                                <i class="fa fa-refresh"></i>
+                                Clear
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_LookupList", Model)
+</div>
+<div class="modal inmodal LookupPopup" id="model-AddEditLookup" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated  fadeIn" id="divAddLookup">
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        var dataStreet;
+        var Value;
+        var Description;
+        var DisplayOrder;
+        $(document).ready(function () {
+            //$('#tblLookupReport_paginate').addClass('pull-right');
+            //$('#tblLookupReport_filter').addClass('pull-right');
+            dataLookup= $('#tblLookupReport').DataTable({
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                "order": [[ 4, "asc" ]],
+                buttons: [
+                    { extend: 'excel', title: 'LookupReport Report', className: 'btn-outline', exportOptions: { columns: [2,3,4] } },
+                    { extend: 'pdf', title: 'LookupReport Report', className: 'btn-outline', exportOptions: { columns: [2,3,4] } },
+                    {
+                        extend: 'print', className: 'btn-outline', exportOptions: { columns: [ 2, 3, 4] },
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+
+
+            $('.LookupPopup').on('submit', '#LookupPopupfrm', function (e) {
+                var url = $('#LookupPopupfrm')[0].action;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $('#LookupPopupfrm').serialize(),
+                    success: function (data) {
+                        if (data.status != null) {
+                            if (data.status) {
+                                $("#hSuccessMsgPop").html('Successfully saved.');
+                                $("#hErrorMsgPop").html('');
+                                //oTable.ajax.reload();
+                            }
+                            else {
+                                $("#hErrorMsgPop").html('Error Adding the Lookup ');
+                                $("#hSuccessMsgPop").html('');
+                            }
+                        }
+                        else {
+                            $.each(data, function () {
+                                $("#hErrorMsgPop").html(this.ErrorMessage);
+                                $("#hSuccessMsgPop").html('');
+                            });
+                        }
+                    }
+                })
+                e.preventDefault();
+            })
+
+            $("#search-clear").click(function () {
+                $("#Value").val('')
+                $("#GroupId").prop("selectedIndex", 0);
+            });
+
+        });
+
+    //Edit event handler.
+    $("body").on("click", "#tblLookupReport .Edit", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                $(this).find("input").show();
+                $(this).find("span").hide();
+            }
+        });
+        row.find(".Update").show();
+        row.find(".Cancel").show();
+        row.find(".Delete").hide();
+        //store for cancel Action
+        Value = row.find(".Value").find("span").html();
+        ValueDescription = row.find(".ValueDescription").find("span").html();
+        DisplayOrder = row.find(".DisplayOrder").find("span").html();
+        $(this).hide();
+    });
+
+    //Update event handler.
+    $("body").on("click", "#tblLookupReport .Update", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+                span.html(input.val());
+                span.show();
+                input.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Cancel").hide();
+        $(this).hide();
+
+        var Lookup = {};
+        Lookup.Value = row.find(".Value").find("span").html();
+        Lookup.ValueDescription = row.find(".ValueDescription").find("span").html();
+        Lookup.DisplayOrder = row.find(".DisplayOrder").find("span").html();
+        Lookup.GroupId = row.find(".GroupId").find("span").html();
+        Lookup.ValueId = row.find(".ValueId").find("span").html();
+        $.ajax({
+            type: "POST",
+            url: "/Lookup/UpdateLookup",
+            data: '{Lookup:' + JSON.stringify(Lookup) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+            if (data.status != null) {
+                if (data.status) {
+                    $("#hSuccessMsg").html('Successfully updated.');
+                    $("#hErrorMsg").html('');
+                }
+                else {
+                    $("#hErrorMsg").html('Error Updating the Lookup ');
+                    $("#hSuccessMsg").html('');
+                }
+            }
+            else {
+                $.each(data, function () {
+                    $("#hErrorMsg").html(this.ErrorMessage);
+                    $("#hSuccessMsg").html('');
+                    $("td", row).each(function () {
+                    if ($(this).find("input").length > 0) {
+                        $(this).find("input").show();
+                        $(this).find("span").hide();
+                    }
+                });
+                row.find(".Update").show();
+                row.find(".Cancel").show();
+                row.find(".Delete").hide();
+                row.find(".Edit").hide();
+                row.find(".Delete").hide();
+                });
+
+                $("td", row).each(function () {
+                    if ($(this).find("input").length > 0) {
+                        $(this).find("input").show();
+                        $(this).find("span").hide();
+                    }
+                });
+                row.find(".Update").show();
+                row.find(".Cancel").show();
+                row.find(".Delete").hide();
+                row.find(".Edit").hide();
+                row.find(".Delete").hide();
+            }
+        }
+        });
+    });
+
+    //Cancel event handler.
+    $("body").on("click", "#tblLookupReport .Cancel", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+                input.val(span.html());
+                span.show();
+                input.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Update").hide();
+        $(this).hide();
+        row.find(".Value").find("span").html = Value;
+        row.find(".ValueDescription").find("span").html = ValueDescription;
+        row.find(".DisplayOrder").find("span").html = DisplayOrder;
+         //window.location.reload();
+    });
+
+     function LoadLookupPopup(id,Gid) {
+            $.ajax({
+                url: "@Url.Action("NewLookup", "Lookup")",
+                type: "POST",
+                data: JSON.stringify({ id: id,groupId:Gid }),
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#divAddLookup").html(data);
+                    $('#model-AddEditLookup').modal('show');
+                },
+                failure: function (response) {
+                    swal("Error!", "Failed", "error");
+                }
+            });
+        }
+
+        function DeleteLookup(ValueId, Active) {
+         var row = $(this).closest("tr");
+            swal({
+                title: "Do you really want to change the status?",
+                text: "Change Status",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Change it!",
+                closeOnConfirm: false
+            }, function (isConfirm) {
+                if (!isConfirm) return;
+                $.ajax({
+                    url: "@Url.Action("Delete", "Lookup")",
+                    type: "POST",
+                    data: { id: ValueId,strActive:Active },
+                    success: function (data) {
+                        if (data != '' && data.status == 'true') {
+                            swal({
+                                title: "Status has been changed.",
+                                text: "",
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "#4CAF50",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: true
+                            }, function (isConfirm) {
+
+                                row.find(".Edit").hide();
+                                row.find(".Delete").hide();
+                                row.find("span").html('&nbsp;');
+                                window.location.reload();
+                                //  dataStreet.fnDraw();
+                            });
+                        }
+                        else {
+                            swal("Error!", "Failed to change the status/You are not Authorized", "error");
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        swal("Error deleting!", "Please try again", "error");
+                    }
+                });
+            });
+        }
+
+    </script>
+}
+
+

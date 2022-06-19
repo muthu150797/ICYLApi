@@ -1,0 +1,188 @@
+﻿.top-navigation .navbar-brand {
+    background: #fff;
+    color: #fff;
+    padding: 15px 25px;
+}
+
+.navbar-brand {
+    float: left;
+    height: 80px;
+    padding: 2px 2px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.top-navigation .wrapper.wrapper-content {
+      padding: 5px;  
+}
+
+.wrapper-content {
+      padding: 10px 10px 40px;  
+}
+
+.top-navigation .nav > li > a {
+    padding: 30px 20px;
+    color: #676a6c;
+}
+
+
+[placeholder]:focus::-webkit-input-placeholder {
+  color: #ddd;
+}
+
+
+[placeholder]:focus::-webkit-input-placeholder { color: #ddd; }
+[placeholder]:focus:-moz-placeholder { color: #ddd; } /* FF 4-18 */
+[placeholder]:focus::-moz-placeholder { color: #ddd; }  /*FF 19+ */
+[placeholder]:focus:-ms-input-placeholder { color: #ddd; } /* IE 10+ */
+
+.checkbox, .radio {
+    position:relative;
+    display:block;
+    margin-top:0px;
+    margin-bottom:10px;
+}
+
+
+.blue {
+    color:#428bca;
+}
+.green {
+    color:#1ab394;
+}
+.orange {
+    color:#ffb900 !important;
+}
+ 
+.grey {
+   color:#c2c2c2 !important;  
+}
+.pink {
+   color:#ed5565 !important;  
+}
+
+.logintitle {
+    color:#ffffff;
+}
+/*Original: Style.css*/
+.ibox-tools a {
+  cursor: pointer;
+  margin-left: 5px;
+  color: #3E86CF;
+}
+
+.ibox { 
+  margin-bottom: 10px !important; 
+}
+
+
+
+/* Google Maps */
+.google-map {
+  height: 325px;
+}
+
+
+.blueBackground {
+    background-color:#1c84c6 !important;
+}
+.orangeBackground {
+    background-color:#ffb900 !important;
+}
+/*Original: Style.css*/
+
+.statspadding {
+    padding-left:5px !important;
+    padding-right:5px !important;
+}
+
+.title {
+    font-size:24px;
+    font-weight:bold;
+    color:#000000
+}
+
+.danger:link { color: #ed5565 !important; }
+.danger:visited { color: #ed5565 !important; }
+.danger:hover { color: #ed5565 !important; }
+.danger:active { color: #ed5565 !important; }
+.danger:focus { color: #ed5565 !important; }
+
+.disable:link { color: #808080 !important; }
+.disable:visited { color: #808080 !important; }
+.disable:hover { color: #808080 !important; }
+.disable:active { color: #808080 !important; }
+.disable:focus { color: #808080 !important; }
+
+.label_login {
+  color: #ffffff !important; 
+}
+.login-bg {
+    background-color: #2f4050;
+}
+
+
+.client-detail {
+    position: relative;
+    height: 420px;
+    border: 1px solid #808080;
+    margin-bottom:10px;
+    padding:5px;
+}
+
+
+.product-imitation {
+    text-align: center;
+    padding: 15px 0;
+    background-color: #f8f8f9;
+    color: #bebec3;
+    font-weight: 600;
+}
+
+.carousel-indicators .active {
+    width: 12px;
+    height: 12px;
+    margin: 0;
+    /* background-color: #fff; */
+}
+.carousel-indicators li {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 1px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: #000\9;
+    background-color: rgba(0,0,0,0);
+    /* border: 1px solid #fff; 
+    border-radius: 10px;*/
+}
+
+a {
+    color: #0385f5;
+    text-decoration: none;
+}
+
+
+.m-t {
+   margin-top: 0px !important;  
+}
+
+.list-group {
+    padding-left: 0;
+     margin-bottom: 0px !important;  
+}
+
+.datepicker 
+{
+    z-index: 999999999 !important;   
+}
+.ui-datepicker-div
+ {
+    z-index: 999999999 !important;   
+}
+
+.form-horizontal .form-group {
+    margin-right: 0px;
+    margin-left: 0px;
+}

@@ -1,0 +1,16 @@
+﻿@model ICYL.BL.ICYLErrorLog
+@{
+    ViewBag.Title = "Error";
+}
+<div class="row">
+    <div class="col-lg-offset-1 col-lg-10">
+        <div class=" text-center alert alert-info">
+            <h1 class="font-bold danger-element">oops! something went wrong</h1>
+            <hr>
+            <h2> An error occurred while processing your request. Error Code:<b> @MvcHtmlString.Create(Model.ErrorCode)</h2> Please try again later
+            <div><a href="@Url.Action("Donation","Home")">Try again</a></div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,558 @@
+﻿@model ICYL.BL.PaymentConfig
+@using EnterpriseLayer.Utilities;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="blue font-bold">Donate Online</h1>
+        <p>
+            The Islamic Center of Yorba Linda is determined to serve our community! Through our work, our member organizations, interfaith partners, and the community-at-large,
+            Islamic Center of Yorba Linda will meet the challenges of today, continue to learn, and constantly improve for the betterment of the organizations we represent and the community-at-large.
+        </p>
+        <p> Thank you for supporting the ICYL in its efforts to strengthen the community and face the challenges of today and into the future.</p>
+    </div>
+</div>
+@if (Conversion.ConversionToString(ViewBag.err).Trim().Length>0)
+{
+    <div class="alert alert-danger">@MvcHtmlString.Create(ViewBag.err)</div>
+}
+<div class="row">
+    @using (Html.BeginForm("Donation", "Home", FormMethod.Post, new { id = "frmDonation", @class = "form-horizontal", @role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        if (!ViewData.ModelState.IsValid)
+        {
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="alert alert-danger" role="alert">
+                        @Html.ValidationSummary(false, "")
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-md-12">
+            <h2 class="blue font-bold">Donation Form</h2>
+            <div class="hr-line-dashed"></div>
+            <div class="row">
+                <div class="col-xs-12 col-md-2">
+                    <div class="input-group m-b">
+                        <span class="input-group-addon">$</span>
+                        @Html.TextBoxFor(model => model.AmtDonation, new { @placeholder = "Amount", @class = "form-control", @id = "txtAmtDonation" })
+                        @Html.ValidationMessageFor(x => x.AmtDonation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="20">$20.00</button>
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="50">$50.00</button>
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="75">$75.00</button>
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="100">$100.00</button>
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="200">$200.00</button>
+                    <button type="button" class="btn btn-outline btn-default dAmount" value="">Custom Amount</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="i-checks"><label>@Html.CheckBoxFor(m => m.IsTransactionFeesIncluded, new { id = "IsTransactionFeesIncluded" }) I'd like to help cover the transaction fees of $<span id="SPAmtTransactionPaid"></span> for my donation. </label></div>
+                    <input id="hdnTransactionAmount" type="hidden" />
+                    @Html.HiddenFor(m => m.AmtTransactionPaid)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <label>Make this donation</label>
+                    @Html.RadioButtonFor(model => model.IsRecurring, "false", false) <label class="control-label">One time</label>
+                    @Html.RadioButtonFor(model => model.IsRecurring, "true", true) <label class="control-label">Every</label>
+                </div>
+            </div>
+
+             
+                <div class="row divRecurring hide">
+                    <div class="col-xs-12 col-md-12">
+                        @Html.DropDownListFor(model => model.RecurringType, new SelectList(Model.lstRecurringType, "Value", "Text", Model.RecurringType), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row divRecurring hide">
+                    <div class="col-xs-6 col-md-6">
+                        <label>Start&nbsp;Date</label><span>&nbsp;</span>
+                        @Html.TextBoxFor(model => model.dtPaymentStart, "{0:MM/dd/yyyy}", new { @placeholder = "Start Date", @class = "form-control", @autocomplete = "off" })
+                        @Html.ValidationMessageFor(x => x.dtPaymentStart, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <div class="i-checks"><label>@Html.RadioButtonFor(model => model.PaymentEndType, "1")<i></i>No End Date (ongoing subscription)</label></div>
+                    </div>
+                </div>
+                <div class="row divRecurring hide"> 
+                    <div class="col-xs-6 col-md-6">
+                        <div class="i-checks">@Html.RadioButtonFor(model => model.PaymentEndType, "2")<label>End Date</label></div>
+                        @Html.TextBoxFor(model => model.dtPaymentEnd, new { @placeholder = "End Date", @class = "form-control", @autocomplete = "off" })
+                        @Html.ValidationMessageFor(x => x.dtPaymentEnd, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <div class="i-checks">@Html.RadioButtonFor(model => model.PaymentEndType, "3")<label>Ends After</label></div>
+                        @Html.TextBoxFor(model => model.PaymentMaxOccurences, new { @placeholder = "Max Times", @class = "form-control", @Maxlength = 4 })
+                        @Html.ValidationMessageFor(x => x.PaymentMaxOccurences, "", new { @class = "text-danger" })
+                        <label>Occurrences</label>
+                    </div>
+
+                </div>
+            
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Donation Category</label>
+                        @Html.DropDownListFor(model => model.lkpDonationCategory, new SelectList(Model.lstCategory, "Value", "Text", Model.lkpDonationCategory),"PLEASE SELECT THE DONATION CATEGORY", new { @class = "form-control single-line", id = "lkpDonationCategory" })
+                        @Html.ValidationMessageFor(x => x.lkpDonationCategory, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <h2 class="blue font-bold">Select Payment Method</h2>
+            <div class="hr-line-dashed"></div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    @*<div class="i-checks"><label> <input type="radio" checked="checked" value="5" name="PaymentType"> <i></i> Credit Card </label></div>
+                        <div class="i-checks"><label> <input type="radio" value="6" name="PaymentType"> <i></i> eCheck (ACH) </label></div>*@
+                    @Html.RadioButtonFor(model => model.PaymentType, "5")  <label class="control-label">Credit Card</label>
+                    @Html.ValidationMessageFor(x => x.PaymentType, " ", new { @class = "text-danger" })
+                    @Html.RadioButtonFor(model => model.PaymentType, "6")  <label class="control-label">eCheck (ACH)</label>
+                    @Html.ValidationMessageFor(x => x.PaymentType, " ", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+
+
+            <div id="divCreditCard">
+                <h2 class="blue font-bold">Credit Card Info</h2>
+                <div class="hr-line-dashed"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>CARD NUMBER</label>
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.CCNum, new { @placeholder = "Card Number", @class = "form-control", @maxlength="16" })
+                                @Html.ValidationMessageFor(x => x.CCNum, "", new { @class = "text-danger" })
+                                <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-7 col-md-7">
+                        <div class="form-group">
+                            <label>EXPIRATION DATE (MM/YY)</label>
+                            @Html.TextBoxFor(model => model.CCExpiry, new { @placeholder = "MM/YY", @class = "form-control", data_mask = "99/99" })
+                            @Html.ValidationMessageFor(x => x.CCExpiry, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-5 col-md-5 pull-right">
+                        <div class="form-group">
+                            <label>CV CODE</label>
+                            @Html.TextBoxFor(model => model.CCCvc, new { @placeholder = "CVC", @class = "form-control" , @Maxlength = 4})
+                            @Html.ValidationMessageFor(x => x.CCCvc, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>CARD HOLDER NAME</label>
+                            @Html.TextBoxFor(model => model.CCHolderName, new { @placeholder = "NAME", @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.CCHolderName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="diveCheck" class="hidden">
+                <h2 class="blue font-bold">Bank Details</h2>
+                <div class="hr-line-dashed"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <img src="~/images/check.png" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-4">
+                        <div class="form-group">
+                            <label>ROUTING NUMBER</label>
+                            @Html.TextBoxFor(model => model.BankRoutingNum, new { @placeholder = "ROUTING", @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.BankRoutingNum, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-1 col-md-1 ">
+                    </div>
+                    <div class="col-xs-4 col-md-4 ">
+                        <div class="form-group">
+                            <label>ACCOUNT NUMBER</label>
+                            @Html.TextBoxFor(model => model.BankAccountNum, new { @placeholder = "A/C", @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.BankAccountNum, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-4">
+                        <div class="form-group">
+                            <label>NAME ON ACCOUNT</label>
+                            @Html.TextBoxFor(model => model.BankNameOnAccount, new { @placeholder = "NAME", @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.BankNameOnAccount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-1 col-md-1 ">
+                    </div>
+                    <div class="col-xs-4 col-md-4 ">
+                        <div class="form-group">
+                            <label>ACCOUNT TYPE</label>
+                            <select name="BankAccountType" id="BankAccountType" class="form-control">
+                                <option value="1">CHECKING</option>
+                                <option value="2">SAVINGS</option>
+                                <option value="3">BUSINESS SAVINGS</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="blue font-bold">Personal Info</h2>
+            <div class="hr-line-dashed"></div>
+            <div class="row">
+                <div class="col-xs-7 col-md-7">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        @Html.TextBoxFor(model => model.FirstName, new { @placeholder = "First Name", @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-xs-5 col-md-5 pull-right">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        @Html.TextBoxFor(model => model.LastName, new { @placeholder = "Last Name", @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        @Html.TextBoxFor(model => model.CompanyName, new { @placeholder = "Company Name", @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.CompanyName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        @Html.TextBoxFor(model => model.EmailId, new { @placeholder = "Email", @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.EmailId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="i-checks">@Html.CheckBoxFor(m => m.IsAnonymous)<label><i>&nbsp;</i>Make this an anonymous donation.</label></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Comments</label>
+                        @Html.TextAreaFor(model => model.Comments, new { @class = "form-control form-control-full", rows = 5, @maxlength = "500" })
+                        @Html.ValidationMessageFor(x => x.Comments, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        @Html.TextBoxFor(model => model.PhoneNumber, new { @placeholder = "PhoneNumber", @class = "form-control", data_mask = "999-999-9999" })
+                        @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="blue font-bold">Billing Info</h2>
+                    <div class="hr-line-dashed"></div>
+                     
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Street Address</label>
+                                @Html.TextBoxFor(model => model.BillingAddressLine1, new { @placeholder = "Number / Name", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.BillingAddressLine1, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Address 2 (Optional)</label>
+                                @Html.TextBoxFor(model => model.BillingAddressLine2, new { @placeholder = "Address 2 (Optional)", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.BillingAddressLine2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>City</label>
+                                @Html.TextBoxFor(model => model.BillingCity, new { @placeholder = "City", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.BillingCity, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <div class="form-group">
+                                <label>State</label>
+                                @Html.TextBoxFor(model => model.BillingState, new { @placeholder = "State", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.BillingState, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6 ">
+                            <div class="form-group">
+                                <label>Zip/ Postal Code</label>
+                                @Html.TextBoxFor(model => model.BillingZip, new { @placeholder = "Zip/ Postal Code", @class = "form-control", data_mask = "99999", maxlength = "5" })
+                                @Html.ValidationMessageFor(x => x.BillingZip, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <h2 class="blue font-bold">
+                        Mailing Info
+                        <small>@Html.CheckBox("chkMailingAddress", false) Same as billing address</small>
+                    </h2>
+                    <div class="hr-line-dashed"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Street Address</label>
+                                @Html.TextBoxFor(model => model.MailingAddressLine1, new { @placeholder = "Number / Name", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.MailingAddressLine1, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Address 2 (Optional)</label>
+                                @Html.TextBoxFor(model => model.MailingAddressLine2, new { @placeholder = "Address 2 (Optional)", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.MailingAddressLine2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>City</label>
+                                @Html.TextBoxFor(model => model.MailingCity, new { @placeholder = "City", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.MailingCity, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <div class="form-group">
+                                <label>State</label>
+                                @Html.TextBoxFor(model => model.MailingState, new { @placeholder = "State", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.MailingState, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6 pull-right">
+                            <div class="form-group">
+                                <label>Zip/ Postal Code</label>
+                                @Html.TextBoxFor(model => model.MailingZip, new { @placeholder = "Zip/ Postal Code", @class = "form-control", data_mask = "99999", maxlength = "5" })
+                                @Html.ValidationMessageFor(x => x.MailingZip, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-3">
+                    <div class="input-group m-b">
+                        <span class="input-group-addon"><b>Donation Total $</b></span>
+                        @Html.TextBoxFor(model => model.AmtTotal, new { @placeholder = "Total", @class = "form-control", @id = "txtAmtTotal" })
+                        @Html.ValidationMessageFor(x => x.AmtTotal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="i-checks " id="divTotal"><label>$<span id="txtTotal"></span> donation plus $<span id="txttrans"></span> to help cover fees.</label></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    @*<button class="btn btn-success" type="submit">Make a payment!</button>*@
+                    <button type="submit" id="Donation-save" name="DonationSubmit" value="Make a payment!" class="btn btn-success">
+                        <i class="fa fa-Save"></i>
+                        Make a payment!
+                    </button>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $('form').submit(function () {
+    if ($(this).valid()) {
+        $(':submit', this).attr('disabled', 'disabled');
+    }
+    });
+    $(document).ready(function () {
+
+        $('#dtPaymentStart').datepicker({ minDate: 0 });
+        $('#dtPaymentEnd').datepicker({});
+        RecurringType();
+        PaymentEndType();
+        PaymentType();
+        ShowTransactionMessage();
+        $(".dAmount").click(function () {
+            var Amtvalue = $(this).val();
+            $("#txtAmtDonation").val(Amtvalue);
+            CalculateFee();
+            ShowTransactionMessage();
+        });
+
+        $('#chkMailingAddress').click(function () {
+            if ($(this).is(":checked")) {
+                $('#MailingAddressLine1').val($('#BillingAddressLine1').val());
+                $('#MailingAddressLine2').val($('#BillingAddressLine2').val());
+                $('#MailingCity').val($('#BillingCity').val());
+                $('#MailingState').val($('#BillingState').val());
+                $('#MailingZip').val($('#BillingZip').val());
+            } 
+        });
+
+    });
+
+    $('input[type=radio][name=IsRecurring]').change(function () {
+        RecurringType();
+    });
+
+    function RecurringType() {
+        var selected = $("input[name='IsRecurring']:checked").val();
+        if (selected == 'false') {
+            $(".divRecurring").removeClass("show");
+            $(".divRecurring").addClass("hide");
+        }
+        else {
+            $(".divRecurring").removeClass("hide");
+            $(".divRecurring").addClass("show");
+        }
+    }
+
+
+    function CalculateFee() {
+        var transFee = 0;
+        var Donation = $("#txtAmtDonation").val();
+        if (Donation == 'NaN' || Donation == '0' || Donation == '' || Donation == null) {
+            Donation = 20;
+        }
+        var selected = $("input[name='PaymentType']:checked").val();
+        if (selected == '5') {
+            transFee = (Donation * 2) / 100;
+        }
+        else {
+            transFee = (Donation * 1.5) / 100;
+        }
+         /*(donation * 0.05) + (donation * 0.029) + 0.3;*/
+        $("#SPAmtTransactionPaid").text(transFee.toFixed(2));
+
+    }
+
+
+    function CalculateTotal() {
+        var Donation = $("#txtAmtDonation").val();
+        if (Donation == 'NaN' || Donation == '0' || Donation == '' || Donation == null) {
+            Donation = 20;
+        }
+        CalculateFee();
+        var transFee = $("#SPAmtTransactionPaid").text();
+        var Total = Number(Donation)
+        if ($("#IsTransactionFeesIncluded").is(':checked')) {
+            Total = Number(Donation) + Number(transFee);
+        }
+
+        $("#txtTotal").text(Donation);
+        $("#txttrans").text(transFee);
+        $("#AmtTransactionPaid").val(transFee);
+        $("#txtAmtTotal").val(Total);
+
+    }
+    function ShowTransactionMessage() {
+        CalculateTotal();
+        if ($("#IsTransactionFeesIncluded").is(':checked')) {
+            $("#divTotal").removeClass("hidden");
+            $("#divTotal").addClass("show");
+        }
+        else {
+            $("#divTotal").removeClass("show");
+            $("#divTotal").addClass("hidden");
+        }
+    }
+    $("#IsTransactionFeesIncluded").change(function () {
+        if (this.checked) {
+        }
+        ShowTransactionMessage();
+    });
+    $('input[type=radio][name=PaymentType]').change(function () {
+        PaymentType();
+    });
+
+    function PaymentType() {
+        var selected = $("input[name='PaymentType']:checked").val();
+        if (selected == '5') {
+            $("#divCreditCard").removeClass("hidden");
+            $("#divCreditCard").addClass("show");
+            $("#diveCheck").removeClass("show");
+            $("#diveCheck").addClass("hidden");
+        }
+        else {
+            $("#divCreditCard").removeClass("show");
+            $("#divCreditCard").addClass("hidden");
+            $("#diveCheck").removeClass("hidden");
+            $("#diveCheck").addClass("show");
+        }
+        CalculateFee();
+        CalculateTotal();
+    }
+
+
+    $("#txtAmtDonation").change(function () { ShowTransactionMessage(); });
+    $('input[type=radio][name=PaymentEndType]').change(function () {
+        PaymentEndType();
+    });
+
+    function PaymentEndType() {
+        var selected = $("input[name='PaymentEndType']:checked").val();
+        if (selected == 1) {
+            $("#dtPaymentEnd").attr("disabled", "disabled");
+            $("#PaymentMaxOccurences").attr("disabled", "disabled");
+        }
+        else if (selected == 2) {
+            $("#PaymentMaxOccurences").val('');
+            $("#PaymentMaxOccurences").attr("disabled", "disabled");
+            $("#dtPaymentEnd").removeAttr("disabled");
+        }
+        else {
+            $("#dtPaymentEnd").val('');
+            $("#dtPaymentEnd").attr("disabled", "disabled");
+            $("#PaymentMaxOccurences").removeAttr("disabled");
+        }
+
+    }
+</script>

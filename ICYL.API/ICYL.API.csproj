@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AuthorizeNet" Version="2.0.2" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nancy" Version="2.0.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PayPal" Version="1.9.1" />
+    <PackageReference Include="PayPalCoreSDK" Version="1.7.1" />
+    <PackageReference Include="Stripe.net" Version="39.89.0" />
+    <!--<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />-->
+    <!--<PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.16.2" />-->
+    <!--<PackageReference Include="RazorPay.Core" Version="1.0.2" />-->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ICYL.BL">
+      <HintPath>C:\Users\moonwhite\Downloads\ICYL (1)\ICYL\ICYL.BL\bin\Debug\ICYL.BL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

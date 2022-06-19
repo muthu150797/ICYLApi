@@ -1,0 +1,32 @@
+03/11/2021
+**Currently Pending Items**
+1. Email Corrections
+2. Download transactions
+3. Add new API/Account per Donation Category.
+
+
+**New items in Priority**
+-- 5000
+1. Create an App to collect Donation from mobile device -- Wrapper on the web application.
+2. Card Reader Integration
+3. Simplify the Donation form.
+4. Pledge process
+	Monitor
+	Notifications to Pledges
+	Trackable transactions per pledge
+	Report
+
+********************************************************
+5. Email single or Yearly summary to the Doner Manually OR Automatically at the end of each year - (Settings to Enable & Disable Auto Summary mail)
+6. Ability to add and modify Donor info.
+7. Ability to add manual payments from admin.
+8. User Registration & Account - > User can see/print their payments, pledges, donation receipt , pledge Balance  etc..  in their account
+9. User Account Update / Password management 
+8. Admin - User account management -  Update user details / enable disable account / Password management / broadcast mails 
+9. Donation Category Management - API Mapping (Add/Edit Donation Category and Map API/BankAccount per Category)
+10.Response mail management (add or modify existing mails)
+11.Reporting
+12.Settings - Application Settings 
+13.Application Design and Architecture with Product and Portal mindset.
+
+--firoze.musthafa@gmail.com 

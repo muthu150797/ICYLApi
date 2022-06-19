@@ -1,0 +1,117 @@
+﻿@model ICYL.BL.ICYLEmailBL
+@{
+    ViewBag.Title = "Response Mail";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .note-editor .btn-toolbar button[data-event="showImageDialog"] {
+        display: none !important;
+    }
+
+    .note-editor .btn-toolbar button[data-event="showVideoDialog"] {
+        display: none !important;
+    }
+
+    .note-editor .btn-toolbar button[data-event="showLinkDialog"] {
+        display: none !important;
+    }
+</style>
+<h2>Response Mail</h2>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h3 class="text-danger" id="hErrorMsg"></h3>
+        <h3 class="text-success" id="hSuccessMsg"></h3>
+    </div>
+</div>
+@using (Html.BeginForm("Index", "Email", FormMethod.Post, new { id = "frmEmail", @class = "form-horizontal", @role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, String.Empty, new { @class = "text-danger" })
+    <div class="col-lg-8 animated fadeInRight">
+
+        <div class="mail-body row">
+            <div class="form-group ">
+                <label>Subject:</label>
+                <div class="input-group">
+                    @Html.TextBoxFor(model => model.Subject, new { @placeholder = "Subject", @class = "form-control", @maxlength = "100", id = "txtSubject" })
+                    @Html.ValidationMessageFor(x => x.Subject, "", new { @class = "text-danger" })
+                    <span class="input-group-addon">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+        <div class="mail-text h-200 row">
+            <div class="pull-left click2edit" id="txtbody">
+                @if (Model != null && Model.Body != null)
+                {
+                    @MvcHtmlString.Create(Model.Body)
+                }
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="mail-body text-center tooltip-demo">
+            <a href="#" onclick="javascript: return SaveEmail(this);" class="btn  btn-primary" data-toggle="tooltip" data-placement="top" title="Update Email"><i class="fa fa-floppy-o"></i> Update</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.click2edit').summernote();
+            $("#chkCheckUnCheckAll").change(function () {
+                $(".icheck-helper").prop('checked', $(this).prop("checked"));
+            });
+        });
+
+    function EmailValues()
+    {
+        var model = this;
+        model.Body = $('.click2edit').code();
+        model.Subject = $('#frmEmail')[0]["txtSubject"].value;
+    }
+
+      function SaveEmail(ctrl) {
+        var $form = $('#frmEmail');
+        var request = new EmailValues();
+
+        if ($('#frmEmail')[0]["txtSubject"]=='' ||  $('#frmEmail')[0]["txtSubject"].value.trim().length == 0)
+        {
+            swal("Please enter email subject");
+        }
+        else
+        {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Index", "Email")",
+                data: JSON.stringify({ collection: request }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    if (data.status != null) {
+                        if (data.status) {
+                            swal("Email Updated Successfully!", "ICYL EMAIL", "success");
+                        }
+                        else {
+                            swal("Failed to update Email!", "ICYL EMAIL", "error");
+                        }
+                    }
+                    else {
+                        $.each(data, function () {
+                            $("#hErrorMsgPop").html(this.ErrorMessage);
+                            $("#hSuccessMsgPop").html('');
+                        });
+                    }
+                },
+                failure: function (response) {
+                     swal("Email Updated Successfully!", "ICYL EMAIL", "success");
+                }
+            });
+        }
+
+        return false;
+        }
+    </script>
+}

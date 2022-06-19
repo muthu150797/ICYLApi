@@ -1,0 +1,308 @@
+﻿@model ICYL.BL.PaymentConfigUserandPayment
+@using EnterpriseLayer.Utilities;
+@using System.Web.Mvc;
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+<div id="divGHeader" class="modal-header ">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <h4 class="modal-title">EDIT DONOR</h4>
+    <h2></h2>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3 class="text-danger" id="hErrorMsg"></h3>
+            <h3 class="text-success" id="hSuccessMsg"></h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            @using (Html.BeginForm("EditDonorPost", "Admin", FormMethod.Post, new { id = "frmDonor", @class = "form-horizontal", @role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, String.Empty, new { @class = "text-danger" })
+
+                @*<div id="dvMessage"></div>*@
+                if (Model != null)
+                {
+                    @Html.HiddenFor(model => model.PaymentConfigId, new { id = "hdPaymentConfigId" })
+
+                    if (Model.PaymentType == "8" || Model.PaymentType == "9" || Model.PaymentType == "10")
+                    {
+
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="input-group form-group">
+                                    <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                                    @Html.TextBoxFor(model => model.AmtDonation, new { id = "dtExpectedFrom", @placeholder = "Amount", @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.AmtDonation, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    @Html.DropDownListFor(model => model.lkpDonationCategory, new SelectList(Model.lstCategory, "Value", "Text", Model.lkpDonationCategory), "DONATION CATEGORY", new { @class = "form-control single-line", id = "lkpDonationCategory" })
+                                    @Html.ValidationMessageFor(x => x.lkpDonationCategory, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @Html.RadioButtonFor(model => model.PaymentType, "9")  <label class="control-label">Cash</label>
+                                    @Html.ValidationMessageFor(x => x.PaymentType, " ", new { @class = "text-danger" })
+                                    @Html.RadioButtonFor(model => model.PaymentType, "8")  <label class="control-label">Check</label>
+                                    @Html.ValidationMessageFor(x => x.PaymentType, " ", new { @class = "text-danger" })
+                                    @Html.RadioButtonFor(model => model.PaymentType, "10")  <label class="control-label">Other</label>
+                                    @Html.ValidationMessageFor(x => x.PaymentType, " ", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row hidden" id="divCheckNumber">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.CheckNumber, new { @placeholder = "Check Number", @class = "form-control ", @Maxlength = 20 })
+                                    @Html.ValidationMessageFor(x => x.CheckNumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.AmtDonation)
+                        @Html.HiddenFor(model => model.lkpDonationCategory)
+                        @Html.HiddenFor(model => model.CheckNumber)
+                        @Html.HiddenFor(model => model.PaymentType)
+                    }
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.FirstName, new { @placeholder = "First Name", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.LastName, new { @placeholder = "Last Name", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.FirstNameSecond, new { @placeholder = "First Name (Second)", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.FirstNameSecond, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.LastNameSecond, new { @placeholder = "Last Name (Second)", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.LastNameSecond, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.CompanyName, new { @placeholder = "Company Name", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.CompanyName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.EmailId, new { @placeholder = "Email", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.EmailId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.PhoneNumber, new { @placeholder = "PhoneNumber", @class = "form-control", data_mask = "999-999-9999" })
+                                @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="i-checks">@Html.CheckBoxFor(m => m.IsAnonymous)<label><i>&nbsp;</i>Make this an anonymous donation.</label></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Comments</label>
+                                @Html.TextAreaFor(model => model.Comments, new { @class = "form-control form-control-full", rows = 3, @maxlength = "500" })
+                                @Html.ValidationMessageFor(x => x.Comments, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="blue">Billing Info</h4>
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.BillingAddressLine1, new { @placeholder = "Street Address", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.BillingAddressLine1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.BillingAddressLine2, new { @placeholder = "Address 2 - Optional", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.BillingAddressLine2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.BillingCity, new { @placeholder = "City", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.BillingCity, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.BillingState, new { @placeholder = "State", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.BillingState, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-6 ">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.BillingZip, new { @placeholder = "Zip/ Postal Code", @class = "form-control", data_mask = "99999", maxlength = "5" })
+                                        @Html.ValidationMessageFor(x => x.BillingZip, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="blue ">
+                                Mailing Info
+                                <small>@Html.CheckBox("chkMailingAddress", false) Same as billing address</small>
+                            </h4>
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.MailingAddressLine1, new { @placeholder = "Street Address", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.MailingAddressLine1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.MailingAddressLine2, new { @placeholder = "Address 2 - Optional", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.MailingAddressLine2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.MailingCity, new { @placeholder = "City", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.MailingCity, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.MailingState, new { @placeholder = "State", @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.MailingState, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-6 pull-right">
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(model => model.MailingZip, new { @placeholder = "Zip/ Postal Code", @class = "form-control", data_mask = "99999", maxlength = "5" })
+                                        @Html.ValidationMessageFor(x => x.MailingZip, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="Javascript:ClosePage()" aria-label="Close">Close</button>
+                        <button id="btnEditDonor" class="btn btn-primary" type="submit" title="Edit Donor">Update</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+@Styles.Render("~/plugins/toastrStyles")
+@Scripts.Render("~/plugins/toastr")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        ShowHideCheck();
+        $('#chkMailingAddress').click(function () {
+            if ($(this).is(":checked")) {
+                $('#MailingAddressLine1').val($('#BillingAddressLine1').val());
+                $('#MailingAddressLine2').val($('#BillingAddressLine2').val());
+                $('#MailingCity').val($('#BillingCity').val());
+                $('#MailingState').val($('#BillingState').val());
+                $('#MailingZip').val($('#BillingZip').val());
+            }
+        });
+        $('.mEditDonor').on('submit', '#frmDonor', function (e) {
+            var url = $('#frmDonor')[0].action;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $('#frmDonor').serialize(),
+                success: function (data) {
+                    if (data.status != null) {
+                        if (data.status) {
+                            $("#hSuccessMsg").html(data.Msg);
+                            $("#hErrorMsg").html('');
+                        }
+                        else {
+                            $("#hErrorMsg").html('An error occured while saving the User');
+                            $("#hSuccessMsg").html('');
+                        }
+                    }
+                    else {
+                        $.each(data, function () {
+                            $("#hErrorMsg").html(this.ErrorMessage);
+                            $("#hSuccessMsg").html('');
+                        });
+                    }
+                }
+            })
+            e.preventDefault();
+        });
+    });
+
+         function ClosePage() {
+            document.getElementById("frmDonorSearch").submit();
+    }
+    $('input[type=radio][name=PaymentType]').change(function () {
+        ShowHideCheck();
+    });
+    function ShowHideCheck() {
+        var selected = $("input[name='PaymentType']:checked").val();
+        if (selected == '8') {
+            $("#divCheckNumber").removeClass("hidden");
+            $("#divCheckNumber").addClass("show");
+
+        }
+        else {
+            $("#divCheckNumber").addClass("hidden");
+            $("#divCheckNumber").removeClass("show");
+        }
+    }
+</script>

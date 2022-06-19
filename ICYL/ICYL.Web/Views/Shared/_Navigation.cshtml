@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNet.Identity
+@using GateMasters.Repository;
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    @*<span>
+                        <img alt="image" class="img-circle" src="~/Images/profile.jpg" />
+                    </span>*@
+                    
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs blue">
+                                <h3>@GlobalContext.AccountName</h3>
+                            </span>
+                            <span class="block m-t-xs">
+                                <strong class="font-bold">
+                                    @*@Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
+                                    @*@User.Identity.GetUserName()*@
+                                    @GlobalContext.LoggedInUser
+                                </strong>
+                            </span>
+                            <span class="text-muted text-xs block">@GlobalContext.UserRoleName<b class="caret"></b></span>
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="@Url.Action("UserProfile", "Manage")">Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="@Url.Action("ChangeUserName", "Manage")"><i class="fa fa-user"></i> Change User Name</a></li>
+                        <li class="divider"></li>
+                        <li><a href="@Url.Action("ChangePassword", "Manage")"><i class="fa fa-unlock-alt"></i> Change Password</a></li>
+                        <li class="divider"></li>
+                        <li><a href="@Url.Action("PassCode", "Security")"><i class="fa fa-ticket"></i>Pass Code</a></li>
+                    </ul>
+                </div>
+
+            </li>
+            @*<li class="@Html.IsSelected(controller: "CMS")">
+                    <a href="@Url.Action("Index", "CMS", new  {PageId=1 })"><i class="fa fa-file-pdf"></i> <span class="nav-label">Links & Info</span> <span class="fa arrow"></span></a>
+                </li>*@
+            <li class="@Html.IsSelected(controller: "Dashboards")">
+                <a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Community")">
+                <a href="@Url.Action("ResidentList", "Community")"><i class="fa fa-user"></i> <span class="nav-label">Resident List</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Community")">
+                <a href="@Url.Action("GuestList", "Community")"><i class="fa fa-users"></i> <span class="nav-label">Guest List</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Community")">
+                <a href="@Url.Action("Vehicle", "Community")"><i class="fa fa-car"></i> <span class="nav-label">Vehicle List</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Community")">
+                <a href="@Url.Action("Photos", "Community")"><i class="fa fa-photo"></i> <span class="nav-label">Artifacts</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Report")">
+                <a href="#"><i class="fa fa-list-alt"></i> <span class="nav-label">Reports</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li class="@Html.IsSelected(action: "VisitorPassList")"><a href="@Url.Action("VisitorPassList", "Report")">Guest Activity</a></li>
+                </ul>
+            </li>
+
+            @if (GlobalContext.IsAccountOpenDirectoryEnabled)
+            {
+                <li class="@Html.IsSelected(controller: "Association")">
+                    <a href="@Url.Action("Index", "Association")"><i class="fa fa-photo"></i> <span class="nav-label">Community Directory</span> <span class="fa arrow"></span></a>
+                </li>
+            }
+
+            @if (GlobalContext.IsCMSEnabled)
+            {
+                <li class="@Html.IsSelected(controller: "CMS")">
+                    <a href="@Url.Action("Home", "CMS")"><i class="fa fa-book"></i> <span class="nav-label">Documents</span> <span class="fa arrow"></span></a>
+                </li>
+            }
+            <li class="@Html.IsSelected(controller: "Setting")">
+                <a href="#"><i class="fa fa-gears"></i> <span class="nav-label">Settings</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li class="@Html.IsSelected(action: "ChangeUserName")"><a href="@Url.Action("ChangeUserName", "Manage")"> Change UserName</a></li>
+                    <li class="@Html.IsSelected(action: "ChangePassword")"><a href="@Url.Action("ChangePassword", "Manage")"> Change Password</a></li>
+                    <li class="@Html.IsSelected(action: "PassCode")"><a href="@Url.Action("PassCode", "Security")">Pass Code</a></li>
+                    <li class="@Html.IsSelected(action: "AlertAndText")"><a href="@Url.Action("AlertAndText", "Security")">Alerts and Privacy</a></li>
+                    <li class="@Html.IsSelected(action: "ResidentUserList")"><a href="@Url.Action("ResidentUserList", "Security")">Security & Access</a></li>
+                </ul>
+            </li>
+
+            <li class="@Html.IsSelected(controller: "Video")">
+                @*<a href="@Url.Action("Index", "Video")"><i class="fa fa-list-alt"></i> <span class="nav-label">Training Tutorial</span> <span class="fa arrow"></span></a>*@
+                <a href="@Url.Action("Index", "Video")"><i class="fa fa-list-alt"></i> <span class="nav-label">Training Tutorial</span> <span class="fa arrow"></span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Updates")">
+                <a href="@Url.Action("Index", "Updates")">
+                    <i class="fa fa-star"></i> <span class="nav-label">Latest Updates</span>
+                    <span class="label label-primary pull-right">NEW</span>
+                </a>
+            </li>
+            @*<li class="@Html.IsSelected(controller: "Manage")">
+                    <a href="@Url.Action("ChangePassword", "Manage")"><i class="fa fa-unlock-alt"></i> <span class="nav-label">Change Password</span></a>
+                </li>
+                <li class="@Html.IsSelected(controller: "Community")">
+                    <a href="@Url.Action("AddressPin", "Community")"><i class="fa fa-plug"></i> <span class="nav-label">Change Pin</span></a>
+                </li>
+            *@
+
+        </ul>
+    </div>
+</nav>
