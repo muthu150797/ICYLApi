@@ -99,7 +99,7 @@ namespace ICYL.API.Data
 					else
 					{
 						response.Status = false;
-						response.Message = "Payment details added failed, try again!";
+						response.Message = "Payment details failed to add, try again!";
 					}
 				}
 			}
