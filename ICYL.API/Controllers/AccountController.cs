@@ -47,7 +47,7 @@ namespace ICYL.API.Controllers
         public dynamic ResetPassword(Login userDetails)
         {
             var response = acc.ResetPassword(userDetails);
-            return response;
+            return  response;
         }
         [HttpPost]
         [Route("VerifyOTP")]
