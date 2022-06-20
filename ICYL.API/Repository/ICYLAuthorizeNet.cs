@@ -248,7 +248,7 @@ namespace ICYL.API.Repository
 			var decrypt= System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
 			InvokePaymentAccount(0);
 			//set up data based on transaction
-			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = tokenData };
+			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = @token.Token };
 			//standard api call to retrieve response
 			var paymentType = new paymentType { Item = opaqueData };
 			var transactionRequest = new transactionRequestType
