@@ -12,6 +12,7 @@ using ICYL.API.Entity;
 using ICYL.API.Repository;
 using ICYL.Repository;
 using System.Globalization;
+using ICYL.API.Data;
 
 namespace ICYL.API.Repository
 {
@@ -240,7 +241,7 @@ namespace ICYL.API.Repository
 
 			return obj;
 		}
-		public dynamic DonateByApplePay(ApplePayTokenModel token)
+		public dynamic DonateByApplePay(ApplePayTokenModel token, orderType orderInfo, customerAddressType customerInfo, customerDataType custData)
 		{
 			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(@token.Token);
 			var tokenData = Convert.ToBase64String(plainTextBytes);
@@ -254,9 +255,11 @@ namespace ICYL.API.Repository
 			var transactionRequest = new transactionRequestType
 			{
 				transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // authorize and capture transaction
-				amount = (decimal)token.Amount,// Amount,
+				amount =Convert.ToDecimal(token.Amount),// Amount,
 				payment = paymentType,
-
+				order = orderInfo,
+				billTo = customerInfo,
+				customer = custData,
 			};
 			var request = new createTransactionRequest { transactionRequest = transactionRequest, };
 			// instantiate the controller that will call the service

@@ -59,12 +59,7 @@ namespace ICYL.API.Data
 			return response;
 
 		}
-		public dynamic DonateByApplePay(ApplePayTokenModel token)
-		{
-			var response = ICYLAuthorize.DonateByApplePay(token);// payment.Donate(model);
-			return response;
-
-		}
+		
 		public dynamic GetAllSubscription()
 		{
 			var response = ICYLAuthorize.GetAllSubscription();
@@ -139,6 +134,34 @@ namespace ICYL.API.Data
 				return response;
 			}
 			catch (Exception ex)
+			{
+
+			}
+			return response;
+		}
+		public dynamic DonateByApplePay(ApplePayTokenModel model)
+		{
+			dynamic response = null;
+
+			try
+			{
+				Donations donation = new Donations();
+				customerAddressType CustomerInfo = new customerAddressType
+				{
+					firstName = model.FirstName
+				};
+				customerDataType CustData = new customerDataType
+				{
+					email = model.Email
+				};
+				orderType OrderInfo = new orderType
+				{
+					description = donation.GetDonationCategory(model.DonationCategoryId)// new EmailRepository().FindCategory(model.lkpDonationCategory.ToString())
+				};
+				 response = ICYLAuthorize.DonateByApplePay(model, OrderInfo, CustomerInfo, CustData);// payment.Donate(model);
+				return response;
+			}
+			catch(Exception ex)
 			{
 
 			}
