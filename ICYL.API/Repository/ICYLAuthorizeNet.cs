@@ -241,8 +241,9 @@ namespace ICYL.API.Repository
 
 			return obj;
 		}
-		public dynamic DonateByApplePay(ApplePayTokenModel token, orderType orderInfo, customerAddressType customerInfo, customerDataType custData)
+		public ApplePayResponse DonateByApplePay(ApplePayTokenModel token, orderType orderInfo, customerAddressType customerInfo, customerDataType custData)
 		{
+			ApplePayResponse res = new ApplePayResponse();
 			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(@token.Token);
 			var tokenData = Convert.ToBase64String(plainTextBytes);
 			var base64EncodedBytes = System.Convert.FromBase64String(tokenData);
@@ -270,9 +271,10 @@ namespace ICYL.API.Repository
 			}
 			catch (Exception ex)
 			{
-				return ex;
+				res.Status = false;
+				res.Message = ex.Message;
+				return res;
 			}
-			ApplePayResponse res = new ApplePayResponse();
 			// get the response from the service (errors contained if any)
 			var response = controller.GetApiResponse();
 			// validate response

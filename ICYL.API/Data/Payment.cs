@@ -103,7 +103,7 @@ namespace ICYL.API.Data
 					var isInserted = cmd.ExecuteNonQuery();
 					//var userId = cmd.ExecuteScalar();
 					int status = (int)retValParam.Value;
-					if (status == 1)
+					if (status >= 1)
 					{
 						response.Status = true;
 						response.Message = "Payment details added successfully";
@@ -141,7 +141,7 @@ namespace ICYL.API.Data
 		}
 		public dynamic DonateByApplePay(ApplePayTokenModel model)
 		{
-			dynamic response = null;
+			var response = new ApplePayResponse();
 
 			try
 			{
@@ -159,6 +159,24 @@ namespace ICYL.API.Data
 					description = donation.GetDonationCategory(model.DonationCategoryId)// new EmailRepository().FindCategory(model.lkpDonationCategory.ToString())
 				};
 				 response = ICYLAuthorize.DonateByApplePay(model, OrderInfo, CustomerInfo, CustData);// payment.Donate(model);
+				if (response.Status == true)
+				{
+					PaymentModel detail = new PaymentModel();
+					detail.AmtDonation =Convert.ToDecimal( model.Amount);
+					detail.AmtTransactionPaid = Convert.ToDecimal(model.AmtTransactionPaid);
+					detail.PaymentConfigId = 0;
+					detail.settlementState = "settlement successfully";
+					detail.FirstName = model.FirstName;
+					detail.LastName = "";
+					detail.Email = model.Email;
+					detail.lkpDonationCategory = model.DonationCategoryId;
+					detail.AmtTransaction = detail.AmtTransaction;
+					detail.TransId = response.TransactionId;
+					detail.TransDescription = "Apple Pay";
+					detail.BatchId = 1;
+					detail.IsCreditCard = Convert.ToByte(model.IsCreditCard);// (dynamic)model.IsCreditCard;
+					var res = InsertPaymentDetail(detail);
+				}
 				return response;
 			}
 			catch(Exception ex)
@@ -466,7 +484,7 @@ namespace ICYL.API.Data
 					detail.AmtDonation = (decimal)model.AmtDonation;
 					detail.AmtTransactionPaid = (decimal)model.AmtTransactionPaid;
 					detail.PaymentConfigId = 0;
-					detail.settlementState = "settlement succefully";
+					detail.settlementState = "settlement successfully";
 					detail.FirstName = model.FullName;
 					detail.LastName = model.LastName;
 					detail.Email = model.EmailId;
