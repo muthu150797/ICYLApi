@@ -167,7 +167,9 @@ namespace ICYL.API.Entity
 		}
 		public static string VersionEnv()
 		{
-			return "Test";//Conversion.ConversionToString(ConfigurationManager.AppSettings["VersionEnv"]);
+			var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+
+			return config.GetSection("VersionEnv").Value;
 		}
 		// #endregion Version
 	}

@@ -7,7 +7,11 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Net;
 using System.Net.Mail;
-
+using MimeKit;
+using System.IO;
+using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 namespace ICYL.API.Data
 {
 	public class Account
@@ -358,8 +362,8 @@ namespace ICYL.API.Data
 							{
 								//send email 
 								var name = (string)row["FirstName"];
-								var res = SendEmail(null, name, true);
-								return res;
+								var content = "<b>hi " + name + ",</b><br/> <p>your OTP is " + _OTP + " for Reset Your Password</p>";
+								var res = SendEmail("ICYL Donation", userDetails.UserName, name, content);
 								if (res)
 								{
 									response.Message = "The OTP verfication has been sent to your email,please verify";
@@ -497,32 +501,48 @@ namespace ICYL.API.Data
 		public List<string> lstCC { get; set; }
 
 		MailMessage objEmail = new MailMessage();
-		public dynamic SendEmail(string Subject, string name, bool isHTML)
+		public dynamic SendEmail(string Subject, string ToMail, string name, string content)
 		{
 			try
 			{
-				using (MailMessage mm = new MailMessage("muthumani240697@gmail.com", "muthumani150797@gmail.com"))
-				{
-					mm.Subject = "Password Reset";
-					mm.Body = "<p>Hello " + name + "</p>,your OTP is " + _OTP;
-					//if (model.Attachment.Length > 0)
-					//{
-					//    string fileName = Path.GetFileName(model.Attachment.FileName);
-					//    mm.Attachments.Add(new Attachment(model.Attachment.OpenReadStream(), fileName));
-					//}
-					mm.IsBodyHtml = true;
-					using (SmtpClient smtp = new SmtpClient())
-					{
-						smtp.Host = "smtp.gmail.com";
-						smtp.EnableSsl = true;
-						smtp.UseDefaultCredentials = false;
-						NetworkCredential NetworkCred = new NetworkCredential("muthumani240697@gmail.com", "muthu@15");
-						smtp.Credentials = NetworkCred;
-						smtp.Port = 587;
-						smtp.Send(mm);
-						return true;
-					}
-				}
+				// create email message
+				var email = new MimeMessage();
+				email.From.Add(MailboxAddress.Parse("muthumani240697@gmail.com"));
+				email.To.Add(MailboxAddress.Parse(ToMail));
+				email.Subject = Subject;
+				email.Body = new TextPart(TextFormat.Html) { Text =content };
+
+				// send email
+				using var smtp = new MailKit.Net.Smtp.SmtpClient();
+
+				smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+				smtp.Authenticate("muthumani240697@gmail.com", "gjuwnrtextqaoxzp");
+				smtp.Send(email);
+				smtp.Disconnect(true);
+				return true;
+
+				//using (MailMessage mm = new MailMessage("muthumani240697@gmail.com", "muthumani150797@gmail.com"))
+				//{
+				//	mm.Subject = "Password Reset";
+				//	mm.Body = "<p>Hello " + name + "</p>,your OTP is " + _OTP;
+				//	//if (model.Attachment.Length > 0)
+				//	//{
+				//	//    string fileName = Path.GetFileName(model.Attachment.FileName);
+				//	//    mm.Attachments.Add(new Attachment(model.Attachment.OpenReadStream(), fileName));
+				//	//}
+				//	mm.IsBodyHtml = true;
+				//	using (SmtpClient smtp = new SmtpClient())
+				//	{
+				//		smtp.Host = "smtp.gmail.com";
+				//		smtp.EnableSsl = true;
+				//		smtp.UseDefaultCredentials = false;
+				//		NetworkCredential NetworkCred = new NetworkCredential("muthumani240697@gmail.com", "gjuwnrtextqaoxzp");
+				//		smtp.Credentials = NetworkCred;
+				//		smtp.Port = 587;
+				//		smtp.Send(mm);
+				//		return true;
+				//	}
+				//}
 			}
 			catch (Exception ex)
 			{

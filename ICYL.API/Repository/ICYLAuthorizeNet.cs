@@ -1206,15 +1206,20 @@ namespace ICYL.API.Repository
 
 		public void InvokePaymentAccount(int lkpCategory)
 		{
+			var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+			var lkpVal = new LookUpModel().GetLookupValueById(lkpCategory);
 			//string SandboxapiLoginId = "439GpmpM797Z";
 			//string SandboxtransactionKey = "66D2d6Nkg98yDEsh";
-			string SandboxapiLoginId = "4hZjM2X9q";
-			string SandboxtransactionKey = "746hAagW28dB94rb";
+			string SandboxapiLoginId = config.GetSection("SandboxapiLoginId").Value;
+			string SandboxtransactionKey = config.GetSection("SandboxtransactionKey").Value;
 
 			//Production - General Fund
 
-			string ProductionapiLoginId = "4hZjM2X9q";
-			string ProductiontransactionKey = "746hAagW28dB94rb";
+			string ProductionapiLoginId = config.GetSection("ProductionapiLoginId").Value;
+			string ProductiontransactionKey = config.GetSection("ProductiontransactionKey").Value;
+			var val1 = GlobalContext.VersionEnv();
+			var val2 = GlobalContext.Env.TEST.ToString();
+
 			if (GlobalContext.VersionEnv().Trim().ToUpper() == GlobalContext.Env.TEST.ToString())
 			{
 				SetPaymentAccount(SandboxapiLoginId, SandboxtransactionKey, AuthorizeNet.Environment.SANDBOX);
@@ -1223,7 +1228,7 @@ namespace ICYL.API.Repository
 			{
 				try
 				{
-					LookupValueBL lkpVal = new LookupRepository().GetLookupValueById(lkpCategory);
+					//LookupValueBL lkpVal = new LookupRepository().GetLookupValueById(lkpCategory);
 					if (lkpVal != null && lkpVal.APIId != null && lkpVal.APIKey != null)
 					{
 						SetPaymentAccount(lkpVal.APIId, lkpVal.APIKey, AuthorizeNet.Environment.PRODUCTION);
