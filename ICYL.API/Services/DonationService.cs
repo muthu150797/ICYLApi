@@ -12,6 +12,11 @@ namespace ICYL.API.Services
             DonationModelList response = donation.GetDonations(config);
             return response;
         }
+        public DonationModelList GetAllCategory(dynamic config)
+        {
+            DonationModelList response = donation.GetAllCategory(config);
+            return response;
+        }
         public AmountModelList GetDonationAmount()
         {
             AmountModelList response = donation.GetDonationAmount();

@@ -37,10 +37,10 @@ namespace ICYL.API.Controllers
 
 		}
 		[HttpPost]
-		[Route("DeleteDonationType")]
-		public dynamic DeleteDonationType(DonationModel model)
+		[Route("BlockOrUnblockCategory")]
+		public dynamic BlockOrUnblockCategory(DonationModel model)
 		{
-			var response = config.DeleteDonationType(model);
+			var response = config.BlockOrUnblockCategory(model);
 			return response;
 
 		}

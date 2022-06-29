@@ -241,22 +241,22 @@ namespace ICYL.API.Repository
 
 			return obj;
 		}
-		public ApplePayResponse DonateByApplePay(ApplePayTokenModel token, orderType orderInfo, customerAddressType customerInfo, customerDataType custData)
+		public ApplePayResponse DonateByApplePay(ApplePayTokenModel model, orderType orderInfo, customerAddressType customerInfo, customerDataType custData)
 		{
 			ApplePayResponse res = new ApplePayResponse();
-			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(@token.Token);
+			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(model.Token);
 			var tokenData = Convert.ToBase64String(plainTextBytes);
 			var base64EncodedBytes = System.Convert.FromBase64String(tokenData);
 			var decrypt= System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-			InvokePaymentAccount(0);
+			InvokePaymentAccount(model.DonationCategoryId);
 			//set up data based on transaction
-			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = @token.Token };
+			var opaqueData = new opaqueDataType { dataDescriptor = "COMMON.APPLE.INAPP.PAYMENT", dataValue = model.Token };
 			//standard api call to retrieve response
 			var paymentType = new paymentType { Item = opaqueData };
 			var transactionRequest = new transactionRequestType
 			{
 				transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // authorize and capture transaction
-				amount =Convert.ToDecimal(token.Amount),// Amount,
+				amount =Convert.ToDecimal(model.Amount),// Amount,
 				payment = paymentType,
 				order = orderInfo,
 				billTo = customerInfo,
@@ -1217,8 +1217,6 @@ namespace ICYL.API.Repository
 
 			string ProductionapiLoginId = config.GetSection("ProductionapiLoginId").Value;
 			string ProductiontransactionKey = config.GetSection("ProductiontransactionKey").Value;
-			var val1 = GlobalContext.VersionEnv();
-			var val2 = GlobalContext.Env.TEST.ToString();
 
 			if (GlobalContext.VersionEnv().Trim().ToUpper() == GlobalContext.Env.TEST.ToString())
 			{

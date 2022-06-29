@@ -61,6 +61,50 @@ namespace ICYL.API.Data
 			}
 			return donationModel;
 		}
+		public DonationModelList GetAllCategory(dynamic config)
+		{
+			List<DonationModel> categoryList = new List<DonationModel>();
+			DonationModelList categoryModel = new DonationModelList();
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(config.GetSection("DbConnection").Value))
+				{
+					SqlDataAdapter donationAdapter = new SqlDataAdapter("select * from [Donation] where GroupId=1", config.GetSection("DbConnection").Value);
+					donationAdapter.SelectCommand.CommandType = CommandType.Text;
+					//Using Data Table
+					DataTable userDataTable = new DataTable();
+					donationAdapter.Fill(userDataTable);
+					if (userDataTable.Rows.Count > 0)
+					{
+						foreach (DataRow row in userDataTable.Rows)
+						{
+							DonationModel category = new DonationModel();
+							category.Id = Convert.ToInt32(row["ValueId"]);
+							category.DonationName = (string)row["Value"];
+							category.Active = (bool)row["Active"];
+							category.Description = (string)row["Description"];
+							categoryList.Add(category);
+						}
+						categoryModel.Status = true;
+						categoryModel.DonationList = categoryList;
+					}
+					else
+					{
+						categoryModel.Status = false;
+						categoryModel.DonationList = categoryList;
+						//donation.Message = "No data found";
+						//donation.Status = false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				categoryModel.Status = false;
+				categoryModel.Message = ex.Message;
+				//donationList.Status = false;
+			}
+			return categoryModel;
+		}
 		public AmountModelList GetDonationAmount()
 		{
 			List<DonationAmount> amountList = new List<DonationAmount>();

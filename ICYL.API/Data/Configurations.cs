@@ -11,7 +11,7 @@ namespace ICYL.API.Data
 		public Configurations()
 		{
 			var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
-			_connectionstring = config.GetSection("DbConnection").Value; 
+			_connectionstring = config.GetSection("DbConnection").Value;
 			con = new SqlConnection(_connectionstring);
 		}
 		//saving Quotes templates
@@ -24,19 +24,19 @@ namespace ICYL.API.Data
 				{
 					connection.Open();
 					SqlCommand cmd;
-					if (quotes.QuotesId == 0) 
+					if (quotes.QuotesId == 0)
 					{
-						 cmd = new SqlCommand("insert into Quotes(QuotesTitle) values('" + quotes.QuotesTitle + "')", connection);
+						cmd = new SqlCommand("insert into Quotes(QuotesTitle) values('" + quotes.QuotesTitle + "')", connection);
 					}
 					else
 					{
-						 cmd = new SqlCommand("update Quotes set QuotesTitle='"+quotes.QuotesTitle+"' where QuotesId="+ quotes.QuotesId, connection);
+						cmd = new SqlCommand("update Quotes set QuotesTitle='" + quotes.QuotesTitle + "' where QuotesId=" + quotes.QuotesId, connection);
 					}
 					cmd.CommandType = CommandType.Text;
-					var result=cmd.ExecuteNonQuery();
-					if(result >0)
+					var result = cmd.ExecuteNonQuery();
+					if (result > 0)
 					{
-						response.StatusCode= 200;
+						response.StatusCode = 200;
 						response.Message = "Quote Saved Successfully";
 					}
 					else
@@ -62,7 +62,7 @@ namespace ICYL.API.Data
 				using (SqlConnection connection = new SqlConnection(_connectionstring))
 				{
 					connection.Open();
-					SqlCommand cmd = new SqlCommand("DELETE FROM Quotes WHERE QuotesId="+quotes.QuotesId, connection);
+					SqlCommand cmd = new SqlCommand("DELETE FROM Quotes WHERE QuotesId=" + quotes.QuotesId, connection);
 					cmd.CommandType = CommandType.Text;
 					var result = cmd.ExecuteNonQuery();
 					if (result > 0)
@@ -97,12 +97,12 @@ namespace ICYL.API.Data
 					if (model.Id == 0)
 					{
 						int active = 1;
-						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description) values(1,"+ active+",'" + model.DonationName+"',getdate(),'"+model.Description+"')";
+						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description) values(1," + active + ",'" + model.DonationName + "',getdate(),'" + model.Description + "')";
 						cmd = new SqlCommand(query, connection);
 					}
 					else
 					{
-						 cmd = new SqlCommand("update Donation set Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
+						cmd = new SqlCommand("update Donation set Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
 					}
 					cmd.CommandType = CommandType.Text;
 					var result = cmd.ExecuteNonQuery();
@@ -126,7 +126,7 @@ namespace ICYL.API.Data
 			return response;
 		}
 		//Deleting donation category
-		public dynamic DeleteDonationType(DonationModel model )
+		public dynamic BlockOrUnblockCategory(DonationModel model)
 		{
 			QuotesReponseModel response = new QuotesReponseModel();
 			try
@@ -134,13 +134,20 @@ namespace ICYL.API.Data
 				using (SqlConnection connection = new SqlConnection(_connectionstring))
 				{
 					connection.Open();
-					SqlCommand cmd = new SqlCommand("DELETE FROM Donation WHERE ValueId=" + model.Id, connection);
+					int active = 0;
+					if(model.Active)
+						active = 1;
+
+					SqlCommand cmd = new SqlCommand("update Donation set Active=" + active + " where ValueId =" + model.Id, connection);
 					cmd.CommandType = CommandType.Text;
 					var result = cmd.ExecuteNonQuery();
 					if (result > 0)
 					{
 						response.StatusCode = 200;
-						response.Message = "Donation type deleted Successfully";
+						if (active==1)
+							response.Message = "category Unblocked Successfully";
+						else
+							response.Message = "category Blocked Successfully";
 					}
 					else
 					{
@@ -228,7 +235,7 @@ namespace ICYL.API.Data
 			return response;
 		}
 		public dynamic AddSupportReq(SupportReqModel model)
-		{       
+		{
 			UserInfo userInfo = new UserInfo();
 			QuotesReponseModel response = new QuotesReponseModel();
 			try
@@ -269,7 +276,7 @@ namespace ICYL.API.Data
 		public dynamic GetSupportReq()
 		{
 			List<SupportReqModel> supportReqList = new List<SupportReqModel>();
-			var response =0;
+			var response = 0;
 			try
 			{
 				using (SqlConnection connection = new SqlConnection(_connectionstring))

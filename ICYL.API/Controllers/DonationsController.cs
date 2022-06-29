@@ -32,6 +32,13 @@ namespace ICYL.API.Controllers
 			return response;
 		}
 		[HttpPost]
+		[Route("GetAllCategory")]
+		public DonationModelList GetAllCategory()
+		{
+			DonationModelList response = donations.GetAllCategory(_configuration);
+			return response;
+		}
+		[HttpPost]
 		[Route("GetDonationAmount")]
 		public AmountModelList GetDonationAmount()
 		{

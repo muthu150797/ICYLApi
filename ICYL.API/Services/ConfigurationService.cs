@@ -23,9 +23,9 @@ namespace ICYL.API.Services
 			var response = configuration.SaveDonationType(model);
 			return response;
 		}
-		public dynamic DeleteDonationType(DonationModel model)
+		public dynamic BlockOrUnblockCategory(DonationModel model)
 		{
-			var response = configuration.DeleteDonationType(model);
+			var response = configuration.BlockOrUnblockCategory(model);
 			return response;
 		}
 		public dynamic SaveQuickDonation(DonationAmount model)
