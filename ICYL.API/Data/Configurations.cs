@@ -97,12 +97,12 @@ namespace ICYL.API.Data
 					if (model.Id == 0)
 					{
 						int active = 1;
-						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description) values(1," + active + ",'" + model.DonationName + "',getdate(),'" + model.Description + "')";
+						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description,APIId,APIKey) values(1," + active + ",'" + model.DonationName + "',getdate(),'" + model.Description + "','"+model.LoginId+"','"+model.TransactionKey+"')";
 						cmd = new SqlCommand(query, connection);
 					}
 					else
 					{
-						cmd = new SqlCommand("update Donation set Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
+						cmd = new SqlCommand("update Donation set Value='"+model.DonationName+"', APIId='" + model.LoginId+ "',APIKey='" + model.TransactionKey + "', Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
 					}
 					cmd.CommandType = CommandType.Text;
 					var result = cmd.ExecuteNonQuery();

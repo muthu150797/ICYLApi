@@ -9,6 +9,9 @@
 
         public string? AccountNumber { get; set; }
         public string? Message { get; set; }
+        public string? LoginId { get; set; }
+        public string? TransactionKey { get; set; }
+
     }
     public class DonationModelList
     {

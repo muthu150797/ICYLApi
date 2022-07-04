@@ -17,5 +17,6 @@
 		public string? StartDate { get; set; }
 		public string? EndDate { get; set; }
 		public bool TodayReport { get; set; }
+		public int CategoryId { get; set; }
 	}
 }

@@ -63,9 +63,9 @@ namespace ICYL.API.Controllers
 		}
 		[HttpPost]
 		[Route("GetAllSubscription")]
-		public dynamic GetAllSubscription()
+		public dynamic GetAllSubscription(int id)
 		{
-			var response = payment.GetAllSubscription();
+			var response = payment.GetAllSubscription(id);
 			return response;
 
 		}
@@ -73,7 +73,7 @@ namespace ICYL.API.Controllers
 		[Route("CancelSubscription")]
 		public dynamic CancelSubscription(SubscriptionModel subscription)
 		{
-			var response = payment.CancelSubscription(subscription.SubscriptionId.ToString());
+			var response = payment.CancelSubscription(subscription.SubscriptionId.ToString(), subscription.CategoryId);
 			return response;
 		}
 		//[HttpPost]

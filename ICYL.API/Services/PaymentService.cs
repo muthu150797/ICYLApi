@@ -36,15 +36,15 @@ namespace ICYL.API.Services
             var response = payment.GetAllTransaction(report);
             return response;
         }
-        public dynamic GetAllSubscription()
+        public dynamic GetAllSubscription(int id)
         {
-            var response = payment.GetAllSubscription();
+            var response = payment.GetAllSubscription(id);
             return response;
 
         }
-        public dynamic CancelSubscription(string subscriptionId)
+        public dynamic CancelSubscription(string subscriptionId,int categoryId)
         {
-            var response = payment.CancelSubscription(subscriptionId);
+            var response = payment.CancelSubscription(subscriptionId, categoryId);
             return response;
         }
         //public string GetPaypalPaymentUrl(OrdersModel orders)

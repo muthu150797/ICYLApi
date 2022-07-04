@@ -428,7 +428,7 @@ namespace ICYL.API.Repository
 		public dynamic GetAllTransaction(TransDailyReport reports)
 		{
 			List<TransactionReport> reportResponse = new List<TransactionReport>();
-			InvokePaymentAccount(0);
+			InvokePaymentAccount(reports.CategoryId);
 			// unique batch id
 			string batchId = "";
 			var batchList = getBatchList(reports);
@@ -529,10 +529,10 @@ namespace ICYL.API.Repository
 			}
 			return null;
 		}
-		public dynamic GetAllSubscription()
+		public dynamic GetAllSubscription(int categoryId)
 		{
 			List<SubscriptionModel> subsList = new List<SubscriptionModel>();
-			InvokePaymentAccount(0);
+			InvokePaymentAccount(categoryId);
 			var request = new ARBGetSubscriptionListRequest { searchType = ARBGetSubscriptionListSearchTypeEnum.subscriptionActive };    // only gets active subscriptions
 
 			var controller = new ARBGetSubscriptionListController(request);          // instantiate the controller that will call the service
@@ -566,9 +566,9 @@ namespace ICYL.API.Repository
 			return response;
 			return null;
 		}
-		public dynamic CancelSubscription(string subscriptionId)
+		public dynamic CancelSubscription(string subscriptionId,int categoryId)
 		{
-			InvokePaymentAccount(0);
+			InvokePaymentAccount(categoryId);
 			SubscriptionResModel res = new SubscriptionResModel();
 			//Please change the subscriptionId according to your request
 			var request = new ARBCancelSubscriptionRequest { subscriptionId = subscriptionId };

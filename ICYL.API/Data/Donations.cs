@@ -83,6 +83,8 @@ namespace ICYL.API.Data
 							category.DonationName = (string)row["Value"];
 							category.Active = (bool)row["Active"];
 							category.Description = (string)row["Description"];
+							category.LoginId = row["APIId"] == DBNull.Value ? "":(string)row["APIId"];
+							category.TransactionKey =row["APIKey"]==DBNull.Value ? "" : (string)row["APIKey"];
 							categoryList.Add(category);
 						}
 						categoryModel.Status = true;

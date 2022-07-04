@@ -9,5 +9,7 @@
 		public string PaymentMethod{ get;set; }
 		public string AccountNumber { get; set; }
 		public decimal Amount { get; set; }
+		public int CategoryId { get; set; }
+
 	}
 }

@@ -60,15 +60,15 @@ namespace ICYL.API.Data
 
 		}
 		
-		public dynamic GetAllSubscription()
+		public dynamic GetAllSubscription(int id)
 		{
-			var response = ICYLAuthorize.GetAllSubscription();
+			var response = ICYLAuthorize.GetAllSubscription(id);
 			return response;
 
 		}
-		public dynamic CancelSubscription(string subscriptionId)
+		public dynamic CancelSubscription(string subscriptionId, int categoryId)
 		{
-			var response = ICYLAuthorize.CancelSubscription(subscriptionId);
+			var response = ICYLAuthorize.CancelSubscription(subscriptionId,categoryId);
 			return response;
 		}
 		public TransactionResponse InsertPaymentDetail(PaymentModel paymentDetail)
