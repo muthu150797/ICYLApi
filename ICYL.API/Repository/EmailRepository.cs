@@ -325,45 +325,45 @@ namespace ICYL.API.Repository
             return obj;
         }
 
-        public bool SendDonationReceipt(ICYL.BL.EmailReceipt model)
-        {
-            bool isSendSuccessfully = false;
-            ReceiptBL obj = new ReceiptBL();
-            obj.MemberId = model.LastName;
-            obj.MemberName = model.FullName;
-            obj.CardHolderName = model.CardHolderName;
-            obj.EmailId = model.EmailId;
-            obj.IsRecurringTransaction = model.isRecurring;
-            if ((model.PaymentType == ((int)GlobalContext.PaymentType.CreditCard).ToString()))
-            {
-                obj.PaymentType = "Credit Card";
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(obj.PaymentType))
-                {
-                    obj.PaymentType = Enum.GetName(typeof(GlobalContext.PaymentType), (model.PaymentType));
-                }
-                obj.CardHolderName = "N/A";
-            }
-            obj.Category = FindCategory(model.lkpDonationCategory.ToString());
-            if (obj.IsRecurringTransaction)
-            {
-                obj.RecurringTransaction = "Yes";
-                obj.ConfirmationNumber = model.ConfirmationNumber;
-                obj.Freequency = FindFrequency(model.RecurringType.ToString());
-            }
-            else
-            {
-                obj.RecurringTransaction = "No";
-                obj.Freequency = "None";
-                obj.ConfirmationNumber = model.ConfirmationNumber;
-            }
-            obj.Amount = "$" + model.AmtDonation.ToString();
-            obj.TransactionDate = model.TransactionDate;
-            isSendSuccessfully=new EmailRepository().EmailDonation(obj);
-            return isSendSuccessfully;
-        }
+        //public bool SendDonationReceipt(ICYL.BL.EmailReceipt model)
+        //{
+        //    bool isSendSuccessfully = false;
+        //    ReceiptBL obj = new ReceiptBL();
+        //    obj.MemberId = model.LastName;
+        //    obj.MemberName = model.FullName;
+        //    obj.CardHolderName = model.CardHolderName;
+        //    obj.EmailId = model.EmailId;
+        //    obj.IsRecurringTransaction = model.isRecurring;
+        //    if ((model.PaymentType == ((int)GlobalContext.PaymentType.CreditCard).ToString()))
+        //    {
+        //        obj.PaymentType = "Credit Card";
+        //    }
+        //    else
+        //    {
+        //        if (!string.IsNullOrEmpty(obj.PaymentType))
+        //        {
+        //            obj.PaymentType = Enum.GetName(typeof(GlobalContext.PaymentType), (model.PaymentType));
+        //        }
+        //        obj.CardHolderName = "N/A";
+        //    }
+        //    obj.Category = FindCategory(model.lkpDonationCategory.ToString());
+        //    if (obj.IsRecurringTransaction)
+        //    {
+        //        obj.RecurringTransaction = "Yes";
+        //        obj.ConfirmationNumber = model.ConfirmationNumber;
+        //        obj.Freequency = FindFrequency(model.RecurringType.ToString());
+        //    }
+        //    else
+        //    {
+        //        obj.RecurringTransaction = "No";
+        //        obj.Freequency = "None";
+        //        obj.ConfirmationNumber = model.ConfirmationNumber;
+        //    }
+        //    obj.Amount = "$" + model.AmtDonation.ToString();
+        //    obj.TransactionDate = model.TransactionDate;
+        //    isSendSuccessfully=new EmailRepository().EmailDonation(obj);
+        //    return isSendSuccessfully;
+        //}
 
         public byte[] DownloadDonationReceipt(int transactionId)
         {

@@ -610,8 +610,8 @@ namespace ICYL.API.Repository
 			return 0;// Conversion.ConversionToInt(rValue);
 		}
 
-		public int UpdateDonorAndPayment(ICYL.BL.PaymentConfigUserandPayment model)
-		{
+		//public int UpdateDonorAndPayment(ICYL.BL.PaymentConfigUserandPayment model)
+		//{
 			//PaymentBatch update is applicable only for Cash ,Check & Other
 			string SQL = string.Empty;
 			object rValue = 0;
@@ -766,23 +766,23 @@ namespace ICYL.API.Repository
 			//        UpdatePayment(obj);
 			//    }
 			//}
-			return 0;//Conversion.ConversionToInt(rValue);
-		}
+		//	return 0;//Conversion.ConversionToInt(rValue);
+		//}
 
-		public int UpdatePayment(ICYL.BL.PaymentTransaction model)
-		{
-			//PaymentBatch update is applicable only for Cash ,Check & Other
-			string SQL = string.Empty;
-			object rValue = 0;
-			//IStoredProcedure sp = new StoredProcedure();
-			//SQLParameterList para = new SQLParameterList();
-			//SQL = " update[PaymentTransaction] set AmtTransaction =@AmtTransaction, CreatedOn = CreatedOn where PaymentConfigId = @PaymentConfigId   ";
-			//para.AddSQLParameter("@AmtTransaction", SqlDbType.Decimal, Conversion.ConversionToDecimal(model.AmtTransaction), ParameterDirection.Input);
-			//para.AddSQLParameter("@PaymentConfigId", SqlDbType.Int, Conversion.ConversionToInt(model.PaymentConfigId), ParameterDirection.Input);
-			//para.AddSQLParameter("@CreatedOn", SqlDbType.DateTime, DateTime.Now, ParameterDirection.Input);
-			//rValue = sp.UpdateStoredProcedure(SQL, CommandType.Text, para, GlobalContext.DB_CONN);
-			return 0;// Conversion.ConversionToInt(rValue);
-		}
+		//public int UpdatePayment(ICYL.BL.PaymentTransaction model)
+		//{
+		//	//PaymentBatch update is applicable only for Cash ,Check & Other
+		//	string SQL = string.Empty;
+		//	object rValue = 0;
+		//	//IStoredProcedure sp = new StoredProcedure();
+		//	//SQLParameterList para = new SQLParameterList();
+		//	//SQL = " update[PaymentTransaction] set AmtTransaction =@AmtTransaction, CreatedOn = CreatedOn where PaymentConfigId = @PaymentConfigId   ";
+		//	//para.AddSQLParameter("@AmtTransaction", SqlDbType.Decimal, Conversion.ConversionToDecimal(model.AmtTransaction), ParameterDirection.Input);
+		//	//para.AddSQLParameter("@PaymentConfigId", SqlDbType.Int, Conversion.ConversionToInt(model.PaymentConfigId), ParameterDirection.Input);
+		//	//para.AddSQLParameter("@CreatedOn", SqlDbType.DateTime, DateTime.Now, ParameterDirection.Input);
+		//	//rValue = sp.UpdateStoredProcedure(SQL, CommandType.Text, para, GlobalContext.DB_CONN);
+		//	return 0;// Conversion.ConversionToInt(rValue);
+		//}
 
 		public int AddPayments(PaymentConfig model, int source = 1)
 		{
@@ -1154,8 +1154,8 @@ namespace ICYL.API.Repository
 		}
 
 
-		public void AddPaymentTransaction(ICYL.BL.PaymentTransaction model)
-		{
+		//public void AddPaymentTransaction(ICYL.BL.PaymentTransaction model)
+		//{
 			int PaymentConfigId = 0;
 			//try
 			//{
@@ -1184,12 +1184,12 @@ namespace ICYL.API.Repository
 			//{
 			//    throw;
 			//}
-		}
+		//}
 
-		public int InsertPaymentTransaction(ICYL.BL.PaymentTransaction model, int source = 1)
-		{
+		//public int InsertPaymentTransaction(ICYL.BL.PaymentTransaction model, int source = 1)
+		//{
 
-			string SQL = string.Empty;
+			//string SQL = string.Empty;
 			//IStoredProcedure sp = new StoredProcedure();
 			//SQLParameterList para = new SQLParameterList();
 			//int rValue = 0;
@@ -1233,12 +1233,12 @@ namespace ICYL.API.Repository
 			//{
 			//    throw;
 			//}
-			return 0;// rValue;
-		}
+		//	return 0;// rValue;
+		//}
 
-		public int UpdatePaymentTransaction(ICYL.BL.PaymentTransaction model)
-		{
-			int rValue = 0;
+		//public int UpdatePaymentTransaction(ICYL.BL.PaymentTransaction model)
+		//{
+		//	int rValue = 0;
 			//try
 			//{
 			//    ICYL.Entity.PaymentTransaction obj = _ICYLEntities.PaymentTransactions.Where(x => x.TransId == model.TransId).FirstOrDefault();
@@ -1253,14 +1253,14 @@ namespace ICYL.API.Repository
 			//catch
 			//{
 			//    throw;
-			//}
-			return 0;// rValue;
-		}
+		//	//}
+		//	return 0;// rValue;
+		//}
 
-		public int InsertPaymentConfig(ICYL.BL.PaymentTransaction model)
-		{
-			string name = string.Empty;
-			int result = 0;
+		//public int InsertPaymentConfig(ICYL.BL.PaymentTransaction model)
+		//{
+		//	string name = string.Empty;
+		//	int result = 0;
 			//DateTime? CreatedDt = model.CreatedOn == null ? DateTime.Now : Conversion.ConversionToDateTime(model.CreatedOn);
 			//try
 			//{
@@ -1290,11 +1290,11 @@ namespace ICYL.API.Repository
 			//{
 			//    throw ex;
 			//}
-			return 0;
-		}
+		//	return 0;
+		//}
 
-		public void AddSubscriptionPaymentTransaction(ICYL.BL.PaymentTransaction model)
-		{
+		//public void AddSubscriptionPaymentTransaction(ICYL.BL.PaymentTransaction model)
+		//{
 			//try
 			//{
 
@@ -1321,7 +1321,7 @@ namespace ICYL.API.Repository
 			//{
 			//    throw;
 			//}
-		}
+		//}
 
 		public int InsertSubscriptionPaymentConfig(SubscriptionDetail model, paymentScheduleType PaySchedule, int CategoryId = 2)
 		{

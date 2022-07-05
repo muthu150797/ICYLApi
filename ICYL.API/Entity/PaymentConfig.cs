@@ -1,4 +1,4 @@
-﻿using ICYL.BL.CustomValidator;
+﻿//using ICYL.BL.CustomValidator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

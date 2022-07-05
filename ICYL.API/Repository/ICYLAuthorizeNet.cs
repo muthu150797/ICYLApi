@@ -774,55 +774,55 @@ namespace ICYL.API.Repository
 			return obj;
 		}
 
-		public ICYL.BL.SubscriptionTransaction SetUpRecurringCharge(decimal Amount, paymentScheduleTypeInterval interval, paymentScheduleType schedule
-				, bankAccountType bankAccountInfo
-				, nameAndAddressType nameAndAddressInfo, nameAndAddressType MailTo, customerType customer, int lkpCategory)
-		{
-			InvokePaymentAccount(lkpCategory);
-			ICYL.BL.SubscriptionTransaction obj = new BL.SubscriptionTransaction();
-			var paymentType = new paymentType { Item = bankAccountInfo };
+		//public ICYL.BL.SubscriptionTransaction SetUpRecurringCharge(decimal Amount, paymentScheduleTypeInterval interval, paymentScheduleType schedule
+		//		, bankAccountType bankAccountInfo
+		//		, nameAndAddressType nameAndAddressInfo, nameAndAddressType MailTo, customerType customer, int lkpCategory)
+		//{
+		//	InvokePaymentAccount(lkpCategory);
+		//	ICYL.BL.SubscriptionTransaction obj = new BL.SubscriptionTransaction();
+		//	var paymentType = new paymentType { Item = bankAccountInfo };
 
 
-			ARBSubscriptionType subscriptionType = new ARBSubscriptionType()
-			{
-				amount = Amount,
-				paymentSchedule = schedule,
-				billTo = nameAndAddressInfo,
-				payment = paymentType,
-				shipTo = MailTo,
-				trialAmountSpecified = false,
-				customer = customer
-			};
+		//	ARBSubscriptionType subscriptionType = new ARBSubscriptionType()
+		//	{
+		//		amount = Amount,
+		//		paymentSchedule = schedule,
+		//		billTo = nameAndAddressInfo,
+		//		payment = paymentType,
+		//		shipTo = MailTo,
+		//		trialAmountSpecified = false,
+		//		customer = customer
+		//	};
 
-			var request = new ARBCreateSubscriptionRequest { subscription = subscriptionType };
-			var controller = new ARBCreateSubscriptionController(request);          // instantiate the controller that will call the service
-			controller.Execute();
+		//	var request = new ARBCreateSubscriptionRequest { subscription = subscriptionType };
+		//	var controller = new ARBCreateSubscriptionController(request);          // instantiate the controller that will call the service
+		//	controller.Execute();
 
-			ARBCreateSubscriptionResponse response = controller.GetApiResponse();   // get the response from the service (errors contained if any)
+		//	ARBCreateSubscriptionResponse response = controller.GetApiResponse();   // get the response from the service (errors contained if any)
 
-			if (response == null)
-			{
-				obj.SubscriptionResponseCode = "Failed";
-				obj.SubscriptionResponseText = "Invalid Transaction";
-			}
+		//	if (response == null)
+		//	{
+		//		obj.SubscriptionResponseCode = "Failed";
+		//		obj.SubscriptionResponseText = "Invalid Transaction";
+		//	}
 
 
-			// validate response
-			if (response != null && response.messages.resultCode == messageTypeEnum.Ok)
-			{
-				if (response != null && response.messages.message != null)
-				{
-					obj.SubscriptionTransId = response.subscriptionId.ToString();
-				}
-			}
-			else if (response != null)
-			{
-				obj.SubscriptionResponseCode = response.messages.message[0].code;
-				obj.SubscriptionResponseText = response.messages.message[0].text;
-			}
+		//	// validate response
+		//	if (response != null && response.messages.resultCode == messageTypeEnum.Ok)
+		//	{
+		//		if (response != null && response.messages.message != null)
+		//		{
+		//			obj.SubscriptionTransId = response.subscriptionId.ToString();
+		//		}
+		//	}
+		//	else if (response != null)
+		//	{
+		//		obj.SubscriptionResponseCode = response.messages.message[0].code;
+		//		obj.SubscriptionResponseText = response.messages.message[0].text;
+		//	}
 
-			return obj;
-		}
+		//	return obj;
+		//}
 
 
 		public void getActiveSubscriptions(int CategoryId, int Days)
