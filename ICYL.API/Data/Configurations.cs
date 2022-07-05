@@ -291,13 +291,13 @@ namespace ICYL.API.Data
 					{
 						userInfo.StatusCode = 200;
 						userInfo.Status = true;
-						userInfo.Message = "Support request updates succesfully";
+						userInfo.Message = "The User Request closed Successfully";
 					}
 					else
 					{
 						userInfo.StatusCode = 400;
 						userInfo.Status = false;
-						userInfo.Message = "Support request failed";
+						userInfo.Message = "The Rquest failed to close";
 					}
 				}
 			}
