@@ -28,6 +28,11 @@ namespace ICYL.API.Services
 			var response = accountData.VerifyOTP(otpDetails);
 			return response;
 		}
+		public dynamic ReplyToUser(MailSendReq mailReg)
+		{
+			var response = accountData.SendEmail(mailReg.Subject,mailReg.EmailTo,mailReg.Name,mailReg.Content);
+			return response;
+		}
 		public UserInfo ChangePassword(Login userDetails)
 		{
 			UserInfo response = accountData.ChangePassword(userDetails);

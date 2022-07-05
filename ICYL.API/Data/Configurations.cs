@@ -97,12 +97,12 @@ namespace ICYL.API.Data
 					if (model.Id == 0)
 					{
 						int active = 1;
-						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description,APIId,APIKey) values(1," + active + ",'" + model.DonationName + "',getdate(),'" + model.Description + "','"+model.LoginId+"','"+model.TransactionKey+"')";
+						var query = "insert into Donation(GroupId,Active,Value,CreatedOn,Description,APIId,APIKey) values(1," + active + ",'" + model.DonationName + "',getdate(),'" + model.Description + "','" + model.LoginId + "','" + model.TransactionKey + "')";
 						cmd = new SqlCommand(query, connection);
 					}
 					else
 					{
-						cmd = new SqlCommand("update Donation set Value='"+model.DonationName+"', APIId='" + model.LoginId+ "',APIKey='" + model.TransactionKey + "', Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
+						cmd = new SqlCommand("update Donation set Value='" + model.DonationName + "', APIId='" + model.LoginId + "',APIKey='" + model.TransactionKey + "', Description='" + model.Description + "',ModifiedOn=getdate() where ValueId=" + model.Id, connection);
 					}
 					cmd.CommandType = CommandType.Text;
 					var result = cmd.ExecuteNonQuery();
@@ -135,7 +135,7 @@ namespace ICYL.API.Data
 				{
 					connection.Open();
 					int active = 0;
-					if(model.Active)
+					if (model.Active)
 						active = 1;
 
 					SqlCommand cmd = new SqlCommand("update Donation set Active=" + active + " where ValueId =" + model.Id, connection);
@@ -144,7 +144,7 @@ namespace ICYL.API.Data
 					if (result > 0)
 					{
 						response.StatusCode = 200;
-						if (active==1)
+						if (active == 1)
 							response.Message = "category Unblocked Successfully";
 						else
 							response.Message = "category Blocked Successfully";
@@ -273,6 +273,42 @@ namespace ICYL.API.Data
 			}
 			return userInfo;
 		}
+		public dynamic UpdateSupportReq(string email)
+		{
+
+			UserInfo userInfo = new UserInfo();
+			QuotesReponseModel response = new QuotesReponseModel();
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionstring))
+				{
+					connection.Open();
+					SqlCommand cmd = new SqlCommand("update Support set Closed=1,Status='Completed' where EmailId='"+email+"'", connection);
+					cmd.CommandType = CommandType.Text;
+					// var response = cmd.ExecuteNonQuery();
+					var result = cmd.ExecuteNonQuery();
+					if (Convert.ToInt32(result) >= 1)
+					{
+						userInfo.StatusCode = 200;
+						userInfo.Status = true;
+						userInfo.Message = "Support request updates succesfully";
+					}
+					else
+					{
+						userInfo.StatusCode = 400;
+						userInfo.Status = false;
+						userInfo.Message = "Support request failed";
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				userInfo.StatusCode = 400;
+				userInfo.Message = ex.Message;
+				userInfo.Status = false;
+			}
+			return userInfo;
+		}
 		public dynamic GetSupportReq()
 		{
 			List<SupportReqModel> supportReqList = new List<SupportReqModel>();
@@ -295,7 +331,7 @@ namespace ICYL.API.Data
 							supportReq.EmailId = (string)row["EmailId"];
 							supportReq.UserName = (string)row["FirstName"];
 							supportReq.Description = (string)row["Description"];
-							supportReq.CreatedOn = row["CreatedOn"].ToString(); ;
+							supportReq.CreatedOn = row["CreatedOn"].ToString();
 							supportReq.Ticket = (string)row["Ticket"];
 							supportReqList.Add(supportReq);
 						}

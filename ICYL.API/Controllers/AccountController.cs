@@ -57,6 +57,13 @@ namespace ICYL.API.Controllers
             return response;
         }
         [HttpPost]
+        [Route("ReplyToUser")]
+        public dynamic ReplyToUser(MailSendReq mailReq)
+        {
+            var response = acc.ReplyToUser(mailReq);
+            return response;
+        }
+        [HttpPost]
         [Route("GetUserDetail")]
         public dynamic GetUserDetail(UserModel model)
         {
