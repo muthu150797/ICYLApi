@@ -145,21 +145,21 @@ namespace ICYL.API.Data
 					{
 						response.StatusCode = 200;
 						if (active == 1)
-							response.Message = "category Unblocked Successfully";
+							response.Message = "Category Unblocked Successfully";
 						else
-							response.Message = "category Blocked Successfully";
+							response.Message = "Category Blocked Successfully";
 					}
 					else
 					{
 						response.StatusCode = 400;
-						response.Message = "Donation type  failed to delete";
+						response.Message = "Donation Type  failed to delete";
 					}
 				}
 			}
 			catch (Exception ex)
 			{
 				response.StatusCode = 400;
-				response.Message = "Donation type failed to delete";
+				response.Message = "Donation Type failed to delete";
 			}
 			return response;
 		}
