@@ -264,6 +264,7 @@ namespace ICYL.API.Data
 		}
 		public QuotesModel GetQuotes()
 		{
+
 			QuotesModel model = new QuotesModel();
 			List<QuotesList> quotesModel = new List<QuotesList>();
 			try
