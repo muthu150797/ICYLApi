@@ -7,7 +7,7 @@ namespace ICYL.API.Services
 	public class AccountService
 	{
 		public static EmailRepository _emailRepository;
-		Account accountData = new Account(_emailRepository);
+		AccountRepository accountData = new AccountRepository(_emailRepository);
 		public UserInfo Register(UserDetails userDetails)
 		{
 			var response = accountData.Register(userDetails);
