@@ -12,6 +12,7 @@ namespace ICYL.API.Data
 		private readonly SqlConnection con;
 		public Donations()
 		{
+			//
 			var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
 			//var cons = config.GetSection("DbConnection").Value;
 			_connectionstring = config.GetSection("DbConnection").Value;// "Server=tcp:icyldonation.database.windows.net,1433;Initial Catalog=ICYLMobiledonation;Persist Security Info=False;User ID=icyl;Password=!cyldb100$; MultipleActiveResultSets =False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";//config.GetConnectionString("DbConnection");
