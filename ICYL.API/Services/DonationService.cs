@@ -1,12 +1,13 @@
 ﻿using ICYL.API.Data;
 using ICYL.API.Entity;
+using ICYL.API.Repository;
 using static ICYL.API.Entity.DonationAmount;
 
 namespace ICYL.API.Services
 {
     public class DonationService
     {
-        Donations donation = new Donations();
+        DonationsRepository donation = new DonationsRepository();
         public DonationModelList GetDonations(dynamic config)
         {
             DonationModelList response = donation.GetDonations(config);

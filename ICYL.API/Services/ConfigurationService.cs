@@ -1,5 +1,6 @@
 ﻿using ICYL.API.Data;
 using ICYL.API.Entity;
+using ICYL.API.Repository;
 using System.Configuration;
 using System.Data.SqlClient;
 
@@ -7,7 +8,7 @@ namespace ICYL.API.Services
 {
 	public class ConfigurationService
 	{
-		Configurations configuration = new Configurations();
+		ConfigurationRepository configuration = new ConfigurationRepository();
 		public dynamic SaveQuotes(QuotesList quotes)
 		{
 			var response = configuration.SaveQuotes(quotes);
